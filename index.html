@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onepager mit Mapbox und Button</title>
+
+  <!-- Mapbox CSS -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+
+  <!-- Google Fonts: Italiana and Joan -->
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Joan:wght@400&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100%;
+      overflow-x: hidden; /* Ensure no horizontal scrolling */
+    }
+
+   /* Map Styling */
+   #map {
+      height: 90vh; /* Map will take 80% of the viewport height */
+      width: 100%;
+      position: relative; /* Make the map container relative */
+    }
+
+    /* Container for the text (title and description) */
+    .info-container {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10; /* Ensure it appears above the map */
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 800px; /* Limit the width for better readability */
+    }
+
+    .title {
+      font-family: 'Italiana', serif;
+      font-size: 48px;
+      margin: 0 0 10px 0;
+    }
+
+    .description {
+      font-family: 'Joan', serif;
+      font-size: 25px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Legend container */
+    .legend-container {
+      position: absolute;
+      bottom: 135px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 10px;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      z-index: 10; /* Ensure it's above the map */
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      pointer-events: none; /* Ignore pointer events on the container */
+    }
+
+    .legend-item, .legend-title {
+      pointer-events: auto; /* Allow pointer events for legend items */
+    }
+
+    .legend-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .legend-color {
+      display: inline-block;
+      width: 20px;
+      height: 10px;
+      margin-right: 10px;
+      border-radius: 2px;
+    }
+
+    /* Button Styling */
+    .scroll-button {
+        display: block;
+      position: absolute;
+      bottom: 30px; /* Gleiche Höhe wie die Legende */
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index:3;
+    }
+
+    .scroll-button:hover {
+      background-color: #0056b3;
+    }
+
+/* Popup Window Styling */
+ .popup-window {
+      position: absolute;
+      top: 400px;
+      left: 20px;
+      width: 300px;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      z-index: 20;
+      display: none; /* Initially hidden */
+    }
+
+    /* Title Styling */
+    .popup-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    /* Red line with IC1 label */
+    .popup-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .popup-header .line-label {
+      background-color: #ff0000;
+      color: white;
+      padding: 2px 10px;
+      border-radius: 4px;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    .popup-header .line-description {
+      font-size: 14px;
+    }
+
+    /* Circle Styles */
+    .circle-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    
+    .circle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: #ffcccc;
+      font-size: 18px;
+      font-weight: bold;
+      color: black;
+    }
+
+    .circle.cancelled {
+      background-color: #ff9999;
+    }
+
+    .circle-label {
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: black;
+    }
+        /* Data section styling */
+        .data-section {
+      padding: 50px 20px;
+      background-color: #f4f4f4;
+      text-align: center;
+      height: 80vh;
+    }
+
+    .data-title {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+  /* Footer Styling */
+  .footer {
+    height: 2cm; /* Set the height to 2 cm */
+    width: 100%; /* Ensure it spans the full width */
+    background-color: #333333; /* Dark grey background */
+    color: white; /* White text color for contrast */
+    display: flex; /* Use flexbox to center the text */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+    position: relative; /* Position the footer relative to the content */
+  }
+
+ /* Responsive adjustments for smaller screens */
+ @media (max-width: 768px) {
+      /* Shrink the info container */
+      .info-container {
+        width: 90%;
+        padding: 15px;
+      }
+
+      /* Shrink the title and description */
+      .title {
+        font-size: 32px;
+      }
+
+      .description {
+        font-size: 18px;
+      }
+
+      /* Shrink the scroll button */
+      .scroll-button {
+        padding: 8px 15px;
+        font-size: 14px; /* Button size shrinks on small screens */
+      }
+
+      /* Adjust legend container size */
+      .legend-container {
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      /* Adjust legend title */
+      .legend-title {
+        font-size: 14px;
+      }
+
+      /* Adjust legend item size */
+      .legend-item {
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+
+      /* Adjust legend color box size */
+      .legend-color {
+        width: 16px;
+        height: 8px;
+      }
+
+      /* Shrink the title in the data section */
+      .data-title {
+        font-size: 28px;
+      }
+      .footer {
+        font-size: 14px; /* Smaller font size on mobile */
+        height: auto; /* Let the height adjust naturally on small screens */
+      padding: 10px;
+    }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Container for the text content (Title and Description) -->
+  <div class="info-container">
+    <div class="title">Wie verlässlich sind die IC-Linien der SBB?</div>
+    <div class="description">
+      Planst du einen Wochenendtrip oder hast bald einen wichtigen Termin, der dich quer durch die Schweiz führt? 
+      Klicke auf die Linien, um herauszufinden, wie viele Ausfälle und Verspätungen es auf deiner IC-Line gestern hatte.
+    </div>
+  </div>
+
+<!-- Container for the Map -->
+<div id="map"></div>
+
+   <!-- Legend (over the map, fixed position) -->
+   <div class="legend-container">
+    <div class="legend-title">Legende</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #ff0000;"></span> IC1</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #800080;"></span> IC2</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #006400;"></span> IC3</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #FFA500;"></span> IC5</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #90EE90;"></span> IC6</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #0000FF;"></span> IC8</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #FFFF00;"></span> IC21</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #8B0000;"></span> IC51</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #FFC0CB;"></span> IC61</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #D3D3D3;"></span> IC81</div>
+<div class="legend-item"><span class="legend-color" style="background-color: #A9A9A9;"></span> IC</div>
+</div>
+
+<!-- Popup Window -->
+<div class="popup-window" id="popup-window">
+  <div class="popup-title" id="popup-title">Zuverlässigkeit der Linie</div>
+  <div class="line-description" id="line-description">Description of the line</div>
+  <div class="circle-container">
+    <div class="circle">
+      <div class="circle-label">Verspätet</div>
+      <div id="delayed-trains">40</div>
+    </div>
+    <div class="circle cancelled">
+      <div class="circle-label">Ausgefallen</div>
+      <div id="cancelled-trains">5</div>
+    </div>
+  </div>
+</div>
+
+ <!-- Scroll Button (below the map) -->
+ <div class="data-section">
+  <!-- Button unten auf der Karte -->
+  <button class="scroll-button" id="scroll-button">Mehr Informationen zu den Daten</button>
+
+<!-- Neuer Abschnitt für die zusätzlichen Daten/Charts -->
+<section id="data-section" class="data-section">
+  <div class="data-title">Zusätzliche Daten und Statistiken</div>
+  <!-- Hier kannst du später Highcharts oder andere Inhalte hinzufügen -->
+  <p>Hier können die Highcharts eingefügt werden!</p>
+</section>
+
+<!-- Footer Section -->
+<footer class="footer">
+    <p>Homepage by Agnes und Milena</p>
+  </footer>
+
+  <!-- Mapbox JS -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script>
+    // Replace with your actual Mapbox access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWlsZW5hc3RhZGVsbWFubiIsImEiOiJjbTFxdHRtY2wwM2VqMmtxem82emUzamtuIn0.P2B20sBbGljY0rGXZwOqeQ';
+
+    const map = new mapboxgl.Map({
+      container: 'map', // Container ID
+      style: 'mapbox://styles/mapbox/light-v10', // Map style
+      center: [8.2275, 47.4], // Starting position [lng, lat]
+      zoom: 7.2 // Starting zoom level
+    });
+
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+
+
+     // Separate sources and layers for each IC line
+     map.on('load', function () {
+
+// Scroll to data section when the button is clicked
+document.getElementById('scroll-button').addEventListener('click', function() {
+  document.getElementById('data-section').scrollIntoView({ behavior: 'smooth' });
+});
+
+    // Smooth scroll function to the data section
+    function scrollToData() {
+      document.getElementById('data-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+
+// IC1 Line (Red, No Offset)
+map.addSource('ic1-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [6.1093, 46.2329], // Genève Aéroport
+        [7.4391, 46.9481], // Bern
+        [8.5401, 47.3782], // Zürich HB
+        [9.3697, 47.4239]  // St. Gallen
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic1-line-layer',
+  'type': 'line',
+  'source': 'ic1-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#ff0000',
+    'line-width': 4,
+    'line-offset': 0
+  }
+});
+
+// IC2 Line (Purple, Positive Offset)
+map.addSource('ic2-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [8.5401, 47.3782], // Zürich HB
+        [8.5174, 47.1724], // Zug
+        [8.9495, 46.0037]  // Lugano
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic2-line-layer',
+  'type': 'line',
+  'source': 'ic2-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#800080',
+    'line-width': 4,
+    'line-offset': 4
+  }
+});
+
+// IC3 Line (Dark Green, Negative Offset)
+map.addSource('ic3-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.5896, 47.5475], // Basel SBB
+        [8.5401, 47.3782], // Zürich HB
+        [9.5304, 46.8508]  // Chur
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic3-line-layer',
+  'type': 'line',
+  'source': 'ic3-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#006400',
+    'line-width': 4,
+    'line-offset': -4
+  }
+});
+
+// IC5 Line (Orange, Larger Positive Offset)
+map.addSource('ic5-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [6.1093, 46.2329], // Genève Aéroport
+        [6.6336, 46.5197], // Lausanne
+        [7.2499, 47.1399], // Biel/Bienne
+        [8.5401, 47.3782], // Zürich HB
+        [9.3697, 47.4239], // St. Gallen
+        [9.4987, 47.4786]  // Rorschach
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic5-line-layer',
+  'type': 'line',
+  'source': 'ic5-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#FFA500',
+    'line-width': 4,
+    'line-offset': 6
+  }
+});
+
+// IC6 Line (Light Green, Larger Negative Offset)
+map.addSource('ic6-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.5896, 47.5475], // Basel SBB
+        [7.4391, 46.9481], // Bern
+        [7.9873, 46.3172]  // Brig
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic6-line-layer',
+  'type': 'line',
+  'source': 'ic6-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#90EE90',
+    'line-width': 4,
+    'line-offset': -7
+  }
+});
+
+// IC8 Line (Blue, Small Positive Offset)
+map.addSource('ic8-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.9873, 46.3172], // Brig
+        [7.4391, 46.9481], // Bern
+        [8.5401, 47.3782], // Zürich HB
+        [9.3770, 47.5663]  // Romanshorn
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic8-line-layer',
+  'type': 'line',
+  'source': 'ic8-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#0000FF',
+    'line-width': 4,
+    'line-offset': 2
+  }
+});
+
+// IC21 Line (Yellow, Small Negative Offset)
+map.addSource('ic21-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.5896, 47.5475], // Basel SBB
+        [8.3104, 47.0502], // Luzern
+        [8.9495, 46.0037]  // Lugano
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic21-line-layer',
+  'type': 'line',
+  'source': 'ic21-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#FFFF00',
+    'line-width': 4,
+    'line-offset': -2
+  }
+});
+
+// IC51 Line (Wine Red, Positive Offset)
+map.addSource('ic51-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.5896, 47.5475], // Basel SBB
+        [7.2499, 47.1399]  // Biel/Bienne
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic51-line-layer',
+  'type': 'line',
+  'source': 'ic51-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#8B0000',
+    'line-width': 4,
+    'line-offset': 4
+  }
+});
+
+// IC61 Line (Pink, Negative Offset)
+map.addSource('ic61-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.5896, 47.5475], // Basel SBB
+        [7.4391, 46.9481], // Bern
+        [7.8680, 46.6914]  // Interlaken Ost
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic61-line-layer',
+  'type': 'line',
+  'source': 'ic61-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#FFC0CB',
+    'line-width': 4,
+    'line-offset': -3
+  }
+});
+
+// IC81 Line (Light Grey, Larger Positive Offset)
+map.addSource('ic81-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [7.8680, 46.6914], // Interlaken Ost
+        [7.4391, 46.9481], // Bern
+        [8.5401, 47.3782], // Zürich HB
+        [9.3770, 47.5663]  // Romanshorn
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic81-line-layer',
+  'type': 'line',
+  'source': 'ic81-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#D3D3D3',
+    'line-width': 4,
+    'line-offset': 6
+  }
+});
+
+// IC Line (Dark Grey, Larger Negative Offset)
+map.addSource('ic-line', {
+  'type': 'geojson',
+  'data': {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'LineString',
+      'coordinates': [
+        [8.5401, 47.3782], // Zürich HB
+        [8.6327708, 47.6982703]  // Schaffhausen
+      ]
+    }
+  }
+});
+
+map.addLayer({
+  'id': 'ic-line-layer',
+  'type': 'line',
+  'source': 'ic-line',
+  'layout': {
+    'line-join': 'round',
+    'line-cap': 'round'
+  },
+  'paint': {
+    'line-color': '#A9A9A9',
+    'line-width': 4,
+    'line-offset': -6
+  }
+});
+
+// Move IC1 line below the city labels
+map.moveLayer('ic1-line-layer', 'settlement-label');
+
+// Move IC2 line below the city labels
+map.moveLayer('ic2-line-layer', 'settlement-label');
+
+// Move IC3 line below the city labels
+map.moveLayer('ic3-line-layer', 'settlement-label');
+
+// Move IC5 line below the city labels
+map.moveLayer('ic5-line-layer', 'settlement-label');
+
+// Move IC6 line below the city labels
+map.moveLayer('ic6-line-layer', 'settlement-label');
+
+// Move IC8 line below the city labels
+map.moveLayer('ic8-line-layer', 'settlement-label');
+
+// Move IC21 line below the city labels
+map.moveLayer('ic21-line-layer', 'settlement-label');
+
+// Move IC51 line below the city labels
+map.moveLayer('ic51-line-layer', 'settlement-label');
+
+// Move IC61 line below the city labels
+map.moveLayer('ic61-line-layer', 'settlement-label');
+
+// Move IC81 line below the city labels
+map.moveLayer('ic81-line-layer', 'settlement-label');
+
+// Move IC line below the city labels
+map.moveLayer('ic-line-layer', 'settlement-label');
+
+// Click event for IC1
+map.on('click', 'ic1-line-layer', function (e) {
+  showPopup('IC1', 'Genève-Aéroport - Bern - Zürich HB - St. Gallen', 40, 5);
+});
+
+// Click event for IC2
+map.on('click', 'ic2-line-layer', function (e) {
+  showPopup('IC2', 'Zürich HB - Zug - Lugano', 50, 3);
+});
+
+// Click event for IC3
+map.on('click', 'ic3-line-layer', function (e) {
+  showPopup('IC3', 'Basel SBB - Zürich HB - Chur', 35, 4);
+});
+
+// Click event for IC5
+map.on('click', 'ic5-line-layer', function (e) {
+  showPopup('IC5', 'Genève-Aéroport - Lausanne - Zürich HB - St. Gallen - Rorschach', 60, 7);
+});
+
+// Click event for IC6
+map.on('click', 'ic6-line-layer', function (e) {
+  showPopup('IC6', 'Basel SBB - Bern - Brig', 20, 2);
+});
+
+// Click event for IC8
+map.on('click', 'ic8-line-layer', function (e) {
+  showPopup('IC8', 'Brig - Bern - Zürich HB - Romanshorn', 25, 3);
+});
+
+// Click event for IC21
+map.on('click', 'ic21-line-layer', function (e) {
+  showPopup('IC21', 'Basel SBB - Luzern - Lugano', 55, 6);
+});
+
+// Click event for IC51
+map.on('click', 'ic51-line-layer', function (e) {
+  showPopup('IC51', 'Basel SBB - Biel/Bienne', 30, 1);
+});
+
+// Click event for IC61
+map.on('click', 'ic61-line-layer', function (e) {
+  showPopup('IC61', 'Basel SBB - Bern - Interlaken Ost', 45, 4);
+});
+
+// Click event for IC81
+map.on('click', 'ic81-line-layer', function (e) {
+  showPopup('IC81', 'Interlaken Ost - Bern - Zürich HB - Romanshorn', 65, 5);
+});
+
+// Click event for IC (Zürich - Schaffhausen)
+map.on('click', 'ic-line-layer', function (e) {
+  showPopup('IC', 'Zürich HB - Schaffhausen', 15, 0);
+});
+
+// Function to show popup with unique data
+function showPopup(line, description, delays, cancellations) {
+  const popup = document.getElementById('popup-window');
+
+  // Ensure popup exists and is referenced correctly
+  if (popup) {
+    document.getElementById('popup-title').textContent = `Zuverlässigkeit der Linie ${line}`;
+    document.getElementById('line-description').textContent = description;
+    document.getElementById('delayed-trains').textContent = delays;
+    document.getElementById('cancelled-trains').textContent = cancellations;
+
+    // Make the popup visible and move it to the clicked location
+    popup.style.display = 'block';
+  } else {
+    console.log('Popup element not found');
+  }
+}
+
+// Close the popup only when clicking outside the lines
+map.on('click', function (e) {
+  // Check if the click event target is not a line (using feature state)
+  const features = map.queryRenderedFeatures(e.point, {
+    layers: ['ic1-line-layer', 'ic2-line-layer', 'ic3-line-layer', 'ic5-line-layer', 'ic6-line-layer', 'ic8-line-layer', 'ic21-line-layer', 'ic51-line-layer', 'ic61-line-layer', 'ic81-line-layer', 'ic-line-layer']
+  });
+
+  // If no features are clicked, hide the popup
+  if (features.length === 0) {
+    const popup = document.getElementById('popup-window');
+    popup.style.display = 'none';
+  }
+});
+
+// Maus Veränderung (hover effect for each line)
+map.on('mouseenter', 'ic1-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic1-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic2-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic2-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic3-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic3-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic5-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic5-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic6-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic6-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic8-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic8-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic21-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic21-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic51-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic51-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic61-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic61-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic81-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic81-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+map.on('mouseenter', 'ic-line-layer', function () {
+  map.getCanvas().style.cursor = 'pointer';
+});
+map.on('mouseleave', 'ic-line-layer', function () {
+  map.getCanvas().style.cursor = '';
+});
+
+});
+
+</script>
+
+</body>
+</html>
