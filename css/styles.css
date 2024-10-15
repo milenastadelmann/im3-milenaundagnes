@@ -1,0 +1,768 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%; /* Body nimmt die volle Bildschirmhöhe ein */
+  overflow-x: hidden; /* Vermeidung von horizontalem Scrollen */
+}
+
+#content {
+  min-height: calc(100vh - 100px); /* Mindesthöhe des Inhaltsbereichs, minus der Footer-Höhe */
+  padding-bottom: 20px; /* Polsterung unten, um den Inhalt vom Footer fernzuhalten */
+}
+
+.footer {
+  background-color: #2f2a2a; /* Graue Hintergrundfarbe wie in der Data Section */
+  color: #dfdfdf; /* Graue Schriftfarbe */
+  text-align: center; /* Zentriert den gesamten Text */
+  padding: 20px 0;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+}
+
+.footer-content {
+  max-width: 800px; /* Breitenbeschränkung für zentrierten Text */
+  margin: 0 auto; /* Zentriert den Footer-Content */
+}
+
+.footer a {
+  color: #dfdfdf; /* Linkfarbe angepasst auf das Grau des Textes */
+  text-decoration: underline;
+}
+
+.footer a:hover {
+  color: #ffffff; /* Etwas dunklere Farbe beim Hover */
+}
+
+/* Info-Box Styling */
+.info-container {
+  background-color: transparent; /* Macht den Hintergrund unsichtbar */
+  border: none; /* Entfernt alle Ränder */
+  box-shadow: none; /* Entfernt den Schatten */
+  padding: 0; /* Entfernt die Innenabstände */
+  margin: 0 auto; /* Zentriert den Info-Container */
+  max-width: 1200px; /* Maximale Breite des Containers für große Bildschirme */
+  text-align: center; /* Zentriert den Text */
+  padding: 0 20px; /* Fügt auf allen Seiten einen 20px Abstand hinzu */
+}
+
+.title {
+  font-family: 'Italiana', serif;
+  font-size: 48px; /* Größe des Titels */
+  color: #333; /* Farbe des Titels */
+  margin-bottom: 20px; /* Abstand unterhalb des Titels */
+  margin-top: 40px; /* Größerer Abstand vom oberen Rand der Website */
+}
+
+.description {
+  font-family: 'Open Sans', serif;
+  font-size: 19px;
+  line-height: 1.5;
+  color: #555; /* Farbe des Textes */
+  margin: 0 auto; /* Zentriert den Text */
+  max-width: 80%; /* Maximalbreite des Textes, sodass er nicht den gesamten Bildschirm füllt */
+  padding: 0 20px; /* Abstand zu den Bildschirmrändern */
+  margin-bottom: 40px; /* Abstand zwischen der Beschreibung und der Karte */
+}
+
+/* Styling für die Karte */
+#map {
+  width: 100vw; /* Full width */
+  height: calc(100vh - 320px); /* Dynamically set height: 100% viewport height minus total height of info, legend, and button */
+  max-width: 100%;
+  margin: 0 auto; /* Center horizontally */
+  position: relative;
+  z-index: 0;
+}
+
+/* Styling für den Zurücksetzen-Button */
+#reset-container {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%); /* Zentriert den Button horizontal */
+  z-index: 999; /* Hoher z-index für Sichtbarkeit */
+}
+
+.reset-map-button {
+  background-color: #ebeaea;
+  border: 1px solid #000;
+  color: #000;
+  font-family: 'Open Sans', sans-serif;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reset-map-button:hover {
+  background-color: #e0e0e0;
+  border-color: #555;
+  color: #555;
+}
+
+.legend-section {
+  display: flex;
+  align-items: center; /* Zentriert die Items vertikal */
+  justify-content: center; /* Zentriert die Items horizontal */
+  flex-wrap: wrap; /* Erlaubt Umbruch bei kleineren Bildschirmen */
+  margin: 20px auto;
+  max-width: 90%; /* Begrenzung der Breite */
+  font-family: 'Open Sans', sans-serif;
+  padding: 10px;
+}
+
+.legend-title {
+  font-weight: bold;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  margin-right: 20px; /* Abstand zwischen dem Titel "Legende" und den Symbolen */
+  margin-bottom: 5px;
+}
+
+.legend-items {
+  display: flex;
+  align-items: center; /* Elemente werden vertikal zentriert */
+  flex-wrap: wrap; /* Umbruch, wenn der Platz nicht ausreicht */
+  gap: 10px; /* Abstand zwischen den einzelnen Legenden-Items */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Abstand zwischen den IC-Linien */
+}
+
+.legend-color {
+  display: inline-block;
+  width: 20px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 2px;
+}
+
+.legend-label {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  color: black;
+}
+
+/* Button Styling */
+.scroll-button {
+  display: block;
+  position: relative;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-family: 'Open Sans', serif;
+  font-size: 16px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+.scroll-button:hover {
+  background-color: #555;
+}
+
+/* Popup Window Styling */
+.popup-window {
+  position: absolute;
+  top: 400px;
+  left: 20px;
+  width: 250px; /* Adjusted to make the popup more square */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 15px; /* Adjusted padding */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  z-index: 20;
+  display: none;
+}
+
+.popup-title {
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 5px; /* Reduced margin */
+}
+
+.line-description {
+  font-size: 14px;
+  font-family: 'Open Sans', sans-serif;
+  color: #333;
+  margin-bottom: 5px; /* Adjusted margin */
+}
+
+#additional-info {
+  font-size: 13px; /* Smaller font for additional info */
+  font-family: 'Open Sans', sans-serif;
+  color: #555; /* Gray color */
+  margin-bottom: 15px;
+}
+
+/* Circle Styles */
+.circle-container {
+  display: flex;
+  justify-content: space-around; /* Adjusted to bring circles closer */
+  margin-top: 10px; /* Reduced margin */
+}
+
+.circle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+}
+
+.circle.delayed {
+  background-color: rgba(255, 165, 0, 0.6); /* Orange with 80% opacity */
+}
+
+.circle.cancelled {
+  background-color: rgba(255, 0, 0, 0.6); /* Red with 80% opacity */
+}
+
+.circle-label {
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px; /* Adjusted margin to place text under circles */
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Align labels directly under the circles */
+.circle-container .circle + .circle-label {
+  margin-top: 5px; /* Small margin to align labels */
+}
+
+/* Data section should cover all content down to the footer */
+.data-section {
+  padding: 50px 20px;
+  background-color: #f4f4f4;
+  text-align: center;
+  min-height: calc(100vh - 100px); /* Deckt mindestens den Bildschirmbereich ab */
+  width: 100%; /* Deckt die gesamte Breite ab */
+}
+
+/* Haupttitel in der Data Section (z.B. "Zusätzliche Daten und Statistiken") */
+.data-title {
+  font-size: 42px;
+  margin-bottom: 20px;
+  margin-top: -10px;
+  font-family: 'Italiana', serif;
+  color: #333;
+}
+
+/* Der zusätzliche Titel oberhalb des Diagramms */
+#additional-title {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 19px;
+  color: #555;
+}
+
+/* Styling für den zweigeteilten Button */
+.toggle-button-container {
+  display: inline-flex;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  position: relative; /* Sicherstellen, dass der Button sich relativ zum Standard-Layout bewegt */
+}
+
+.toggle-button {
+  visibility: visible; /* Sicherstellen, dass die Buttons sichtbar sind */
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #555;
+  background-color: #333;
+  color: white;
+  outline: none;
+  width: 150px;
+}
+
+.left-button {
+  border-radius: 5px 0 0 5px; /* Abgerundete linke Ecken */
+  font-family: 'Open Sans', sans-serif;
+}
+
+.right-button {
+  border-radius: 0 5px 5px 0; /* Abgerundete rechte Ecken */
+  font-family: 'Open Sans', sans-serif;
+}
+
+.toggle-button:hover {
+  background-color: #555;
+}
+
+.toggle-button.active {
+  background-color: #333; /* Aktivierte Schaltfläche dunkler */
+}
+
+/* Content section for charts */
+.chart-container {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  margin: 20px auto;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Canvas-Element für das Diagramm */
+canvas {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Chart-Title Styling (optional) */
+.chartjs-title {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chart-bar {
+position: relative;
+}
+
+/* Erklärungstext Styling */
+.chart-explanation {
+  max-width: 1000px; /* Gleiche Breite wie das Chart */
+  margin: 20px auto; /* Zentrieren und Abstand nach oben/unten */
+  font-size: 16px; /* Etwas kleinerer Text für die Erklärung */
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.5; /* Verbessert die Lesbarkeit */
+  color: #555; /* Leicht abgedunkelte Textfarbe */
+  text-align: left; /* Links ausgerichteter Text */
+  padding: 10px; /* Innenabstand für Lesbarkeit */
+  background-color: #f9f9f9; /* Heller Hintergrund zur Hervorhebung */
+  border-radius: 5px; /* Leichte Abrundung der Ecken */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für bessere Sichtbarkeit */
+  text-align: justify;
+}
+
+/* Styling für den neuen Untertitel unterhalb des ersten Diagramms */
+#ranking-subtitle {
+  font-size: 19px; /* Größe des Untertitels */
+  margin-top: 40px; /* Abstand zum vorherigen Inhalt */
+  margin-bottom: 20px; /* Abstand nach unten */
+  font-family: 'Open Sans', sans-serif;
+  color: #333; /* Textfarbe */
+}
+
+/* Styling für den zweigeteilten Button (Ranking Section) */
+.ranking-toggle-button-container {
+  display: inline-flex;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.ranking-toggle-button {
+  visibility: visible;
+  font-size: 16px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #555;
+  background-color: #333;
+  color: white;
+  outline: none;
+  width: 150px;
+}
+
+.ranking-left-button {
+  border-radius: 5px 0 0 5px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.ranking-right-button {
+  border-radius: 0 5px 5px 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.ranking-toggle-button:hover {
+  background-color: #555;
+}
+
+.ranking-toggle-button.active {
+  background-color: #333;
+}
+
+/* Styling für den Ranking chart) */
+.chart-container {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Erklärungstext Styling (für Ranking Chart) */
+.chart-explanation {
+  max-width: 1000px; /* Gleiche Breite wie das Chart */
+  margin: 20px auto; /* Zentrieren und Abstand nach oben/unten */
+  font-size: 16px; /* Etwas kleinerer Text für die Erklärung */
+  line-height: 1.5; /* Verbessert die Lesbarkeit */
+  color: #555; /* Leicht abgedunkelte Textfarbe */
+  text-align: left; /* Links ausgerichteter Text */
+  padding: 10px; /* Innenabstand für Lesbarkeit */
+  background-color: #f9f9f9; /* Heller Hintergrund zur Hervorhebung */
+  border-radius: 5px; /* Leichte Abrundung der Ecken */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für bessere Sichtbarkeit */
+  text-align: justify;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Zwischentitel: Wozu diese Datenvisualisierung? */
+.subtitle {
+  font-size: 19px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Erklärungstext: Wozu Datenvisualisierung? */
+.chart-explanation {
+  max-width: 1000px; /* Gleiche Breite wie das Chart */
+  margin: 20px auto; /* Zentrieren und Abstand nach oben/unten */
+  font-size: 16px; /* Etwas kleinerer Text für die Erklärung */
+  line-height: 1.5; /* Verbessert die Lesbarkeit */
+  color: #555; /* Leicht abgedunkelte Textfarbe */
+  text-align: left; /* Links ausgerichteter Text */
+  padding: 10px; /* Innenabstand für Lesbarkeit */
+  background-color: #f9f9f9; /* Heller Hintergrund zur Hervorhebung */
+  border-radius: 5px; /* Leichte Abrundung der Ecken */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für bessere Sichtbarkeit */
+  text-align: justify;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Responsive adjustments for the Data Section on tablets and smaller screens */
+@media (max-width: 1024px) {
+  /* Allgemeine Anpassungen */
+  html, body {
+    font-size: 90%; /* Reduziert die Basis-Schriftgröße */
+  }
+
+  #map {
+    height: calc(100vh - 420px); /* Kleinere Höhe für die Karte */
+  }
+
+  .info-container {
+    max-width: 95%; /* Nimmt fast die gesamte Bildschirmbreite ein */
+    padding: 0 15px; /* Kleinerer Abstand zum Rand */
+  }
+
+  .title {
+    font-size: 32px; /* Kleinere Schriftgröße für den Titel */
+  }
+
+  .description {
+    font-size: 18px; /* Kleinere Schriftgröße für den Text */
+  }
+
+  .scroll-button {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  .legend-title {
+    font-size: 14px;
+    margin-right: 10px;
+  }
+
+  .legend-label {
+    font-size: 12px;
+  }
+
+  .legend-color {
+    width: 15px;
+    height: 8px;
+  }
+
+  .legend-section {
+    padding: 5px;
+  }
+
+  .legend-items {
+    gap: 5px; /* Kleinere Abstände zwischen den Items */
+  }
+
+  .footer {
+    font-size: 14px;
+    height: auto;
+    padding: 10px;
+  }
+
+  #reset-container {
+    top: 5px; /* Weniger Abstand vom oberen Rand der Karte */
+  }
+
+  .reset-map-button {
+    padding: 8px 15px; /* Kleinere Polsterung für den Button */
+    font-size: 12px; /* Kleinere Schriftgröße */
+  }
+
+  /* Data Section: Titel und Inhalt */
+  .data-section {
+    padding: 30px 15px; /* Reduziert das Padding */
+    max-width: 95%; /* Maximale Breite für kleinere Bildschirme */
+    margin: 0 auto; /* Zentriert die Data Section */
+  }
+
+  .data-title {
+    font-size: 28px; /* Kleinere Schriftgröße für den Titel */
+  }
+
+  .chart-container {
+    max-width: 90%; /* Diagramme nehmen 90 % der Breite ein */
+    margin: 20px auto;
+  }
+
+  .chart-explanation {
+    font-size: 14px; /* Kleinere Schriftgröße für Erklärungen */
+    line-height: 1.4;
+    max-width: 90%; /* Die maximale Breite der Erklärung wird reduziert */
+    margin: 10px auto;
+  }
+
+  #ranking-subtitle {
+    font-size: 20px; /* Kleinere Schriftgröße für den Untertitel */
+    margin-top: 30px;
+  }
+
+  .toggle-button-container,
+  .ranking-toggle-button-container {
+    width: 100%; /* Buttons nehmen die volle Breite ein */
+    display: flex;
+    justify-content: space-around; /* Gleichmäßige Verteilung der Buttons */
+  }
+
+  .toggle-button,
+  .ranking-toggle-button {
+    font-size: 14px; /* Kleinere Schaltflächen */
+    padding: 8px 15px;
+    width: 45%; /* Schaltflächen nehmen 45% der Breite ein */
+  }
+
+  .popup-window {
+    width: 250px; /* Popup etwas schmaler auf kleinen Bildschirmen */
+    top: 20px; /* Popup näher an den oberen Rand setzen */
+    left: 50%; /* Zentrieren des Popups */
+    transform: translateX(-50%); /* Korrekte Zentrierung */
+    padding: 15px; /* Reduziertes Padding */
+  }
+
+  .circle {
+    width: 60px; /* Kleinere Kreise */
+    height: 60px;
+    font-size: 16px; /* Kleinere Schriftgröße in den Kreisen */
+  }
+
+  .circle-label {
+    font-size: 12px; /* Kleinere Labels unter den Kreisen */
+  }
+
+  .popup-title {
+    font-size: 16px; /* Kleinere Titelgröße */
+  }
+
+  .line-description {
+    font-size: 13px; /* Kleinere Schriftgröße für die Beschreibung */
+  }
+}
+
+/* Responsive adjustments for the Data Section on smartphones and very small screens */
+@media (max-width: 450px) {
+
+  /* Allgemeine Anpassungen */
+  #map {
+    height: calc(100vh - 440px); /* Mehr Platz für die Info- und Legendenabschnitte */
+  }
+
+  #reset-container {
+    top: 5px; /* Weniger Abstand vom oberen Rand */
+  }
+
+  .reset-map-button {
+    padding: 6px 12px; /* Noch kleinere Polsterung */
+    font-size: 10px; /* Noch kleinere Schriftgröße */
+  }
+
+  .info-container {
+    max-width: 98%; /* Nimmt fast die gesamte Bildschirmbreite ein */
+    padding: 0 10px; /* Noch kleinerer Abstand zum Rand */
+  }
+
+  .title {
+    font-size: 22px; /* Kleinere Schriftgröße für den Titel */
+    margin-top: 20px;
+  }
+
+  .description {
+    font-size: 14px; /* Noch kleinere Schriftgröße für den Text */
+    margin-bottom: 20px;
+  }
+
+  .scroll-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    width: auto;
+    margin: 10px auto; /* Zentriert den Button */
+    margin-bottom: 20px;
+  }
+
+  .legend-title {
+    font-size: 12px;
+    margin-right: 8px;
+    margin-bottom: 5px;
+  }
+
+  .legend-label {
+    font-size: 12px; /* Kleinere Schriftgröße */
+  }
+
+  .legend-color {
+    width: 10px; /* Kleinere Farbkästchen */
+    height: 5px;
+  }
+
+  .legend-section {
+    padding: 5px;
+  }
+
+  .legend-items {
+    gap: 4px; /* Weniger Abstand zwischen den Items */
+  }
+
+  .legend-item {
+    margin-right: 6px; /* Kleinere Abstände zwischen den IC-Linien */
+  }
+
+  .footer {
+    font-size: 10px;
+    height: auto;
+    padding: 8px;
+  }
+
+  /* Data Section: Titel und Inhalt */
+  .data-section {
+    padding: 15px 10px; /* Mehr Platz links und rechts */
+    max-width: 100%; /* Maximale Breite der Data Section */
+  }
+
+  .data-title {
+    font-size: 22px; /* Kleinere Schriftgröße für den Titel */
+    margin-top: 20px;
+  }
+
+  /* Titel unterhalb der Charts (Verspätungen und Ausfälle) */
+  #additional-title {
+    font-size: 16px; /* Kleinere Schriftgröße */
+    margin-right: 15px; /* Rechtsabstand von 15px */
+    margin-left: 15px; /* Linksabstand von 15px */
+    text-align: center; /* Zentrieren */
+  }
+
+  .chart-container {
+    max-width: 100%; /* Diagramme passen sich der Breite des Containers an */
+    margin: 10px auto; /* Zentriert die Diagramme */
+    margin-right: 20px;
+    padding: 0 15px; /* Abstand von 15px auf der linken und rechten Seite */
+  }
+
+  /* Sicherstellen, dass alle IC-Linien sichtbar sind */
+  canvas {
+    width: 100% !important; /* Volle Breite des Containers für das Diagramm */
+    height: auto !important; /* Höhe wird proportional zur Breite eingestellt */
+    overflow: visible; /* Kein Abschneiden der Diagramme */
+  }
+
+  /* Für die Charts: Rechts 15px Abstand */
+  .chartjs-render-monitor {
+    margin-right: 15px;
+    margin-left: 15px;
+  }
+
+  /* Text-Erklärungen unter den Diagrammen */
+  .chart-explanation {
+    font-size: 12px; /* Noch kleinere Schriftgröße für Erklärungen */
+    line-height: 1.3;
+    max-width: 100%; /* Maximale Breite der Erklärung */
+    margin-left: 10px;
+    margin-right: 32px;
+    text-align: justify;
+  }
+
+  /* Verkleinern von "Welchen Zweck hat diese Datenvisualisierung?" */
+  #visualization-purpose {
+    font-size: 16px; /* Verkleinerte Schriftgröße */
+    margin: 20px auto; /* Zentriert und mit Abstand */
+    padding: 0 15px; /* 15px Polsterung links und rechts */
+  }
+
+  #ranking-subtitle {
+    font-size: 16px; /* Noch kleinere Schriftgröße für den Untertitel */
+    margin: 20px auto; /* Zentriert und mit Abstand */
+    padding: 0 15px; /* 15px Polsterung links und rechts */
+  }
+
+  .toggle-button-container,
+  .ranking-toggle-button-container {
+    width: 100%; /* Buttons nehmen die volle Breite ein */
+    display: flex;
+    justify-content: center; /* Zentriert die Buttons */
+    gap: 10px; /* Abstand zwischen den Buttons */
+  }
+
+  .toggle-button,
+  .ranking-toggle-button {
+    font-size: 10px; /* Kleinere Schaltflächen */
+    padding: 6px 10px;
+    width: auto; /* Dynamische Breite, damit sie gleich groß wie der Mehr Informationen-Button sind */
+    min-width: 100px; /* Mindestbreite, um den Inhalt klar anzuzeigen */
+    text-align: center; /* Zentriert den Text in den Buttons */
+  }
+
+  .popup-window {
+    width: 220px; /* Noch schmaler auf sehr kleinen Bildschirmen */
+    top: 10px; /* Popup näher an den oberen Rand setzen */
+    left: 50%; /* Popup zentrieren */
+    transform: translateX(-50%); /* Korrekte Zentrierung */
+    padding: 10px; /* Reduziertes Padding */
+  }
+
+  .circle {
+    width: 50px; /* Noch kleinere Kreise */
+    height: 50px;
+    font-size: 14px; /* Noch kleinere Schriftgröße in den Kreisen */
+  }
+
+  .circle-label {
+    font-size: 10px; /* Noch kleinere Labels unter den Kreisen */
+  }
+
+  .popup-title {
+    font-size: 14px; /* Kleinere Titelgröße */
+  }
+
+  .line-description {
+    font-size: 12px; /* Kleinere Schriftgröße für die Beschreibung */
+  }
+}

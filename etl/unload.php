@@ -15,7 +15,7 @@ try {
     // Loop through each train line and fetch the corresponding data from the database
     foreach ($trains as $train) {
         // Prepare the SQL query to select data from the 'sbbneu' table
-        $stmt = $pdo->prepare("SELECT linie, abfahrten, verspaetet, ausfall FROM sbbneu WHERE linie = :train");
+        $stmt = $pdo->prepare("SELECT linie, abfahrten, verspaetet, ausfall, zeit FROM sbbneu WHERE linie = :train");
         $stmt->execute([':train' => $train]); // Execute the query for the current train line
         $results[$train] = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch the results as an associative array
     }
