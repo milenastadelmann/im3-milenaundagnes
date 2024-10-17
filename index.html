@@ -3,208 +3,221 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onepager mit Mapbox und Button</title>
+  <title>Datenvisualisierung IC-Linien</title>
 
-  <!-- Mapbox CSS -->
+  <!-- Importing Mapbox CSS for styling the map -->
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
 
-  <!-- Google Fonts: Italiana and Joan -->
+  <!-- Importing Google Fonts: Italiana and Joan -->
   <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Joan:wght@400&display=swap" rel="stylesheet">
 
- <!-- Google Fonts: Italiana, Joan, and Open Sans -->
-<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Joan:wght@400&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
+  <!-- Importing Google Fonts: Italiana, Joan, and Open Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Joan:wght@400&family=Open+Sans:wght@400&display=swap" rel="stylesheet">
 
-  <!-- Custom CSS -->
+  <!-- Linking custom CSS for additional styling -->
   <link rel="stylesheet" href="css/styles.css">
 
-    <!-- Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-  </head>
-  <body>
+  <!-- Importing Chart.js library for data visualization and datalabels plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+<body>
 
-  <!-- Container for the text content (Title and Description) -->
+  <!-- Container for the title and description at the top of the page -->
   <div class="info-container">
-    <div class="title">Wiie verlässlich sind die IC-Züge der SBB?</div>
+    <div class="title">Wie verlässlich sind die IC-Züge der SBB?</div>
     <div class="description">
       <strong>Klicke</strong> auf eine IC-Linie, um herauszufinden, wie viele Ausfälle und Verspätungen es auf dieser <strong>gestern</strong> gab.
     </div>
   </div>
 
-  <!-- Container for the Map und Rücksetzbutton -->
+  <!-- Container for the map and reset button -->
   <div id="map">
     <div id="reset-container">
       <button id="reset-map-btn" class="reset-map-button">Zurücksetzen</button>
     </div>
   </div>
 
-    <!-- Container für die Legende -->
-    <div class="legend-section">
-      <span class="legend-title">Legende:</span>
-      <div class="legend-items">
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #ff0000;"></span>
-          <span class="legend-label">IC1</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #800080;"></span>
-          <span class="legend-label">IC2</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #006400;"></span>
-          <span class="legend-label">IC3</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #FFA500;"></span>
-          <span class="legend-label">IC5</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #90EE90;"></span>
-          <span class="legend-label">IC6</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #0000FF;"></span>
-          <span class="legend-label">IC8</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #FFFF00;"></span>
-          <span class="legend-label">IC21</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #8B0000;"></span>
-          <span class="legend-label">IC51</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #FFC0CB;"></span>
-          <span class="legend-label">IC61</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #D3D3D3;"></span>
-          <span class="legend-label">IC81</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-color" style="background-color: #A9A9A9;"></span>
-          <span class="legend-label">IC</span>
-        </div>
+  <!-- Container for the legend section displaying line colors and corresponding IC lines -->
+  <div class="legend-section">
+    <span class="legend-title">Legende:</span>
+    <div class="legend-items">
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #ff0000;"></span>
+        <span class="legend-label">IC1</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #800080;"></span>
+        <span class="legend-label">IC2</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #006400;"></span>
+        <span class="legend-label">IC3</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #FFA500;"></span>
+        <span class="legend-label">IC5</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #90EE90;"></span>
+        <span class="legend-label">IC6</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #0000FF;"></span>
+        <span class="legend-label">IC8</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #FFFF00;"></span>
+        <span class="legend-label">IC21</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #8B0000;"></span>
+        <span class="legend-label">IC51</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #FFC0CB;"></span>
+        <span class="legend-label">IC61</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #D3D3D3;"></span>
+        <span class="legend-label">IC81</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color" style="background-color: #A9A9A9;"></span>
+        <span class="legend-label">IC</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup window showing detailed information about the selected IC line -->
+  <div class="popup-window" id="popup-window">
+    <div class="popup-title" id="popup-title">Linie IC</div>
+    <div class="line-description" id="line-description">Description of the line</div>
+    <div id="additional-info">Auf den Streckenabschnitten dieser IC-Linie kam es insgesamt zu:</div>
+    <div class="circle-container">
+      <div class="circle delayed">
+        <div id="delayed-trains">40</div>
+      </div>
+      <div class="circle cancelled">
+        <div id="cancelled-trains">5</div>
+      </div>
+    </div>
+    <div class="circle-container">
+      <div class="circle-label">Verspätungen</div>
+      <div class="circle-label">Ausfällen</div>
+    </div>
+  </div>
+
+  <!-- Scroll button at the bottom of the map for more data -->
+  <button class="scroll-button" id="scroll-button">Mehr Informationen zu den Daten</button>
+
+  <!-- Section for the additional data and charts -->
+  <section id="data-section" class="data-section">
+    
+    <!-- Title for the data section -->
+    <div class="data-title">Datenübersicht</div>
+
+    <!-- Additional title for the delay and cancellation data -->
+    <p id="additional-title" class="additional-title">
+      Verspätungen und Ausfälle auf den IC-Linien
+    </p>
+
+    <!-- Toggle button and dropdown menu for selecting IC line -->
+    <div class="toggle-button-container">
+      <!-- Button for previous day's data -->
+      <button id="previous-day-btn" class="control-button">Gestern</button>
+      
+      <!-- Dropdown menu for selecting IC line for weekly data -->
+      <div class="dropdown-wrapper">
+        <label class="dropdown-title" for="ic-line-dropdown">Letzte Woche</label>
+        <select id="ic-line-dropdown" class="control-dropdown">
+          <option value="" disabled selected>IC-Linie wählen</option> <!-- Placeholder text -->
+          <option value="IC1">IC1</option>
+          <option value="IC2">IC2</option>
+          <option value="IC3">IC3</option>
+          <option value="IC5">IC5</option>
+          <option value="IC6">IC6</option>
+          <option value="IC8">IC8</option>
+          <option value="IC21">IC21</option>
+          <option value="IC51">IC51</option>
+          <option value="IC61">IC61</option>
+          <option value="IC81">IC81</option>
+          <option value="IC">IC</option>
+        </select>
       </div>
     </div>
 
-<!-- Popup Window -->
-<div class="popup-window" id="popup-window">
-  <div class="popup-title" id="popup-title">Linie IC</div>
-  <div class="line-description" id="line-description">Description of the line</div>
-  <div id="additional-info">Auf den Streckenabschnitten dieser IC-Linie kam es insgesamt zu:</div>
-  <div class="circle-container">
-    <div class="circle delayed">
-      <div id="delayed-trains">40</div>
+    <!-- Container for Chart.js diagram displaying data -->
+    <div class="chart-container">
+      <canvas id="myChart" width="1000" height="600"></canvas>
     </div>
-    <div class="circle cancelled">
-      <div id="cancelled-trains">5</div>
+
+    <!-- Explanation text above the second subtitle -->
+    <div class="chart-explanation">
+      Diese Balkendiagramme bieten eine Übersicht über die Anzahl der Ausfälle und Verspätungen auf den 
+      verschiedenen IC-Linien am Vortag und in der Vorwoche. Eine Verspätung wird ab einer Abweichung von 
+      3 Minuten vom Soll-Fahrplan gewertet. Da Verspätungen für jeden Streckenabschnitt separat erfasst werden, 
+      kann ein IC-Zug auf einer Fahrt mehrere Verspätungen verursachen. So gibt es beispielsweise auf der IC 
+      6-Linie (Basel SBB–Bern–Brig) 7 Haltestellen, zwischen denen es zu Verspätungen kommen kann. Dasselbe gilt 
+      für Zugausfälle, die mehrere Streckenabschnitte betreffen. Als Ausfall wird jede Fahrt gezählt, die nicht 
+      gemäß dem Soll-Fahrplan stattgefunden hat. Zusatzzüge, die für ausgefallene Verbindungen eingesetzt wurden, sind in den Daten nicht erfasst.
     </div>
-  </div>
-  <div class="circle-container">
-    <div class="circle-label">Verspätungen</div>
-    <div class="circle-label">Ausfällen</div>
-  </div>
-</div>
 
-    <!-- Button unten auf der Karte -->
-    <button class="scroll-button" id="scroll-button">Mehr Informationen zu den Daten</button>
-
-<!-- Neuer Abschnitt für die zusätzlichen Daten/Charts -->
-<section id="data-section" class="data-section">
-  
-  <!-- Bestehender Titel für die gesamte Data Section -->
-  <div class="data-title">Datenübersicht</div>
-
-  <!-- Untertitel für die IC-Linien Übersicht -->
-  <p id="additional-title" class="additional-title">
-    Verspätungen und Ausfälle auf allen IC-Linien
-  </p>
-
-<!-- Toggle Button für Vortag und Wochenverlauf -->
-<div class="toggle-button-container">
-  <button id="previous-day-btn" class="toggle-button left-button">Vortag</button>
-  <button id="week-view-btn" class="toggle-button right-button">Wochenverlauf</button>
-</div>
-
-<!-- Container for the Chart.js diagram -->
-<div class="chart-container">
-  <canvas id="myChart" width="1000" height="600"></canvas>
-</div>
-
-<div id="ic-line-filter">
-  <label><input type="checkbox" value="IC1" checked> IC1</label>
-  <label><input type="checkbox" value="IC2" checked> IC2</label>
-  <label><input type="checkbox" value="IC3" checked> IC3</label>
-  <label><input type="checkbox" value="IC5" checked> IC5</label>
-  <label><input type="checkbox" value="IC6" checked> IC6</label>
-  <label><input type="checkbox" value="IC8" checked> IC8</label>
-  <label><input type="checkbox" value="IC21" checked> IC21</label>
-  <label><input type="checkbox" value="IC51" checked> IC51</label>
-  <label><input type="checkbox" value="IC61" checked> IC61</label>
-  <label><input type="checkbox" value="IC81" checked> IC81</label>
-  <label><input type="checkbox" value="IC" checked> IC (General)</label>
-</div>
-
-<!-- Erklärungstext über dem zweiten Untertitel -->
-<div class="chart-explanation">
-Diese Balkendiagramme zeigen in einer Übersicht auf, zu wie vielen Ausfällen und Verspätungen es auf den verschiedenen IC-Linien am Vortag und in der Vorwoche gekommen ist. Eine Verspätung gilt ab einer 3-minütigen Abweichung vom Soll-Fahrplan.
-Ein IC-Zug kann auf einer Fahrt mehrere Verspätungen verursachen, da diese für jeden Streckenabschnitt separat zählen. So gibt es beispielsweise auf der IC 6-Linie (Basel SBB-Bern-Brig) 7 Haltestellen, zwischen denen es zu Verspätungen kommen kann. 
-Das selbe gilt für Zugausfälle, die mehrere Streckenabschnitte betreffen. Als Ausfälle zählen Fahrten, die nicht gemäss Soll-Fahrplan stattgefunden haben. Allfällige Zusatzzüge, die für diese Verbindungen organisiert wurden, werden in den Daten 
-nicht berücksichtigt.
-</div>
-
-<!-- Neuer Untertitel für die Rangliste -->
-<p id="ranking-subtitle" class="subtitle">
-  Rangliste Zuverlässigkeit
-</p>
-
-<!-- Neuer Toggle Button für das Ranking (Vortag und Vorwoche) -->
-<div class="ranking-toggle-button-container">
-  <button id="ranking-previous-day-btn" class="ranking-toggle-button left-button">Vortag</button>
-  <button id="ranking-week-view-btn" class="ranking-toggle-button right-button">Vorwoche</button>
-</div>
-
-<!-- Container für das zweite Chart -->
-<div class="chart-container">
-  <canvas id="reliabilityChart" width="1000" height="600"></canvas>
-</div>
-
-<!-- Erklärungstext unter dem Reliability-Chart -->
-<div class="chart-explanation">
-  Diese Balkendiagramme zeigen auf, welche IC-Linien am Vortag und in der Vorwoche am verlässlichsten waren. Die Verlässlichkeit wird wie folgt berechnet: 100 - (100 / Abfahrten * (Verspätet + Ausfall)). Dadurch
-  werden die Ausfälle und Verspätungen mit der Anzahl Abfahrten gemäss Soll-Fahrplan einer IC-Linie in ein Verhältnis gesetzt.
-</div>
-
-<!-- Dritter Untertitel unterhalb der Ranking-Chart -->
-<p id="visualization-purpose" class="subtitle">Welchen Zweck hat diese Datenvisualisierung?</p>
-
-<!-- Erklärungstext Datenvisualisierung -->
-<div class="chart-explanation">
-  Diese Datenvisualisierung soll dabei helfen, die Zuverlässigkeit der IC-Linien der SBB transparenter zu machen. 
-  Anhand von Verspätungen und Ausfällen wird gezeigt, wie gut jede IC-Linie im Vergleich zu anderen funktioniert. 
-  Dadurch können Reisende besser einschätzen, auf welchen Linien es häufiger zu Problemen kommt und welche Linien verlässlicher sind.
-  Planst du also bald einen Tagesausflug oder hast einen wichtigen Termin, der dich quer durch die Schweiz führt? Nun kannst du nachschauen,
-  ob du besser etwas mehr Zeit für deine Zugreise einberechnen solltest oder dich – statistisch gesehen – auf die Pünktlichkeit verlassen kannst.
-</div>
-</section>
-
-<footer class="footer">
-  <div class="footer-content">
-    <p>
-      Diese Website ist im Rahmen eines Schulprojekts der FHGR entstanden.<br><br>
-      Für das Projekt wurde eine API der SBB verwendet: 
-      <a href="https://data.sbb.ch/explore/dataset/ist-daten-sbb/information/" target="_blank">
-        Soll/Ist Vergleich Abfahrts-/Ankunftszeiten SBB (Vortag)
-      </a>.<br><br>
-      Kein Gewähr auf Korrektheit oder Vollständigkeit der Daten.<br><br>
-      © Milena und Agnes | 2024
+    <!-- Subtitle for ranking section -->
+    <p id="ranking-subtitle" class="subtitle">
+      Zuverlässigkeit der IC-Linien
     </p>
-  </div>
-</footer>
 
-  <!-- Mapbox JS -->
+    <!-- Toggle button for viewing ranking data for previous day or week -->
+    <div class="ranking-toggle-button-container">
+      <button id="ranking-previous-day-btn" class="ranking-toggle-button left-button">Gestern</button>
+      <button id="ranking-week-view-btn" class="ranking-toggle-button right-button">Letzte Woche</button>
+    </div>
+
+    <!-- Container for the second Chart.js diagram -->
+    <div class="chart-container">
+      <canvas id="reliabilityChart" width="1000" height="600"></canvas>
+    </div>
+
+    <!-- Explanation text below the reliability chart -->
+    <div class="chart-explanation">
+      Diese Diagramme zeigen, welche IC-Linien am Vortag und in der Vorwoche die höchste Verlässlichkeit aufwiesen. 
+      Die Verlässlichkeit wird anhand der folgenden Formel berechnet: 100 - (100 / Abfahrten * (Verspätungen + Ausfälle)). 
+      Damit wird die Anzahl der Ausfälle und Verspätungen ins Verhältnis zur Anzahl der planmässigen Abfahrten einer IC-Linie gesetzt.
+    </div>
+
+    <!-- Third subtitle below the ranking chart -->
+    <p id="visualization-purpose" class="subtitle">Welchen Zweck hat diese Datenvisualisierung?</p>
+
+    <!-- Explanation text for the purpose of data visualization -->
+    <div class="chart-explanation">
+      Diese Datenvisualisierung bietet journalistisch wertvolle Einblicke, da sie die Zuverlässigkeit der IC-Linien der SBB 
+      sowie die Anzahl an Verspätungen und Ausfällen transparent darstellt. Sie zeigt auf, wie gut jede IC-Linie im Vergleich 
+      zu anderen funktioniert. Aus den Daten lässt sich beispielsweise ableiten, welche IC-Linie am Vortag am 
+      zuverlässigsten war oder an welchem Tag der Vorwoche eine bestimmte Linie die meisten Ausfälle verzeichnete. 
+      Pendlerinnen und Pendler sowie Reisende können so besser abschätzen, welche Risiken ihre IC-Linien aufweisen. Planst du 
+      also bald einen Tagesausflug oder hast einen wichtigen Termin, der dich quer durch die Schweiz führt? Dank dieser 
+      Website kannst du jetzt einschätzen, ob du besser etwas mehr Zeit für deine Zugreise einplanen solltest oder 
+      dich – statistisch gesehen – auf die Pünktlichkeit verlassen kannst.
+    </div>
+  </section>
+
+  <!-- Footer with project information and credits -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>
+        Diese Website ist im Rahmen eines Schulprojekts der FHGR entstanden.<br><br>
+        Für das Projekt wurden API's von diesem Datensatz der SBB verwendet: 
+        <a href="https://data.sbb.ch/explore/dataset/ist-daten-sbb/information/" target="_blank">
+          Soll/Ist Vergleich Abfahrts-/Ankunftszeiten SBB (Vortag)
+        </a>.<br><br>
+        Kein Gewähr auf Korrektheit oder Vollständigkeit der Daten.<br><br>
+        © Milena und Agnes | 2024
+      </p>
+    </div>
+  </footer>
+
+  <!-- Importing Mapbox JS to render and interact with the map -->
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <script src="js/scripts.js" defer></script>
 

@@ -1,89 +1,150 @@
+/* General Resets */
 html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  height: 100%; /* Body nimmt die volle Bildschirmhöhe ein */
-  overflow-x: hidden; /* Vermeidung von horizontalem Scrollen */
+  height: 100%; /* Ensure the body takes full height */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  box-sizing: border-box;
 }
 
-#content {
-  min-height: calc(100vh - 100px); /* Mindesthöhe des Inhaltsbereichs, minus der Footer-Höhe */
-  padding-bottom: 20px; /* Polsterung unten, um den Inhalt vom Footer fernzuhalten */
+/* Ensures that the box model calculation includes padding and border in the element's width and height */
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
+/* Footer Styling */
 .footer {
-  background-color: #2f2a2a; /* Graue Hintergrundfarbe wie in der Data Section */
-  color: #dfdfdf; /* Graue Schriftfarbe */
-  text-align: center; /* Zentriert den gesamten Text */
-  padding: 20px 0;
+  background-color: #2f2a2a; /* Dark background */
+  color: #dfdfdf; /* Light text color */
+  text-align: center;
+  padding: 10px 0;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
+  width: 100%; /* Full width */
+  z-index: 100; /* Ensure the footer appears on top when necessary */
 }
 
 .footer-content {
-  max-width: 800px; /* Breitenbeschränkung für zentrierten Text */
-  margin: 0 auto; /* Zentriert den Footer-Content */
+  max-width: 90%; /* Limit the width of content */
+  margin: 0 auto;
 }
 
 .footer a {
-  color: #dfdfdf; /* Linkfarbe angepasst auf das Grau des Textes */
+  color: #dfdfdf;
   text-decoration: underline;
 }
 
 .footer a:hover {
-  color: #ffffff; /* Etwas dunklere Farbe beim Hover */
+  color: #ffffff;
+}
+
+/* Responsive adjustments for the footer font size on small screens */
+@media (max-width: 390px) {
+  .footer {
+    font-size: 12px; 
+  }
 }
 
 /* Info-Box Styling */
 .info-container {
-  background-color: transparent; /* Macht den Hintergrund unsichtbar */
-  border: none; /* Entfernt alle Ränder */
-  box-shadow: none; /* Entfernt den Schatten */
-  padding: 0; /* Entfernt die Innenabstände */
-  margin: 0 auto; /* Zentriert den Info-Container */
-  max-width: 1200px; /* Maximale Breite des Containers für große Bildschirme */
-  text-align: center; /* Zentriert den Text */
-  padding: 0 20px; /* Fügt auf allen Seiten einen 20px Abstand hinzu */
+  background-color: transparent; /* Transparent background */
+  border: none; /* No border */
+  box-shadow: none; /* No shadow */
+  padding: 0; /* No padding */
+  margin: 0 auto; /* Center the container */
+  max-width: 1200px; /* Max width for large screens */
+  text-align: center; /* Center text */
+  padding: 0 20px; /* Add some horizontal padding */
 }
 
 .title {
   font-family: 'Italiana', serif;
-  font-size: 48px; /* Größe des Titels */
-  color: #333; /* Farbe des Titels */
-  margin-bottom: 20px; /* Abstand unterhalb des Titels */
-  margin-top: 40px; /* Größerer Abstand vom oberen Rand der Website */
+  font-size: 48px; /* Default font size */
+  color: #333; /* Darker text color */
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+/* Responsive adjustments for the title font size and margins */
+@media (max-width: 768px) {
+  .title {
+    font-size: 40px; /* Slightly smaller on medium screens */
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 390px) {
+  .title {
+    font-size: 34px; /* Smaller on very small screens */
+    margin-top: 20px;
+  }
 }
 
 .description {
   font-family: 'Open Sans', serif;
-  font-size: 19px;
-  line-height: 1.5;
-  color: #555; /* Farbe des Textes */
-  margin: 0 auto; /* Zentriert den Text */
-  max-width: 80%; /* Maximalbreite des Textes, sodass er nicht den gesamten Bildschirm füllt */
-  padding: 0 20px; /* Abstand zu den Bildschirmrändern */
-  margin-bottom: 40px; /* Abstand zwischen der Beschreibung und der Karte */
+  font-size: 19px; /* Default font size */
+  line-height: 1.5; /* Ensure readability with proper line height */
+  color: #555; /* Light gray text */
+  margin: 0 auto; /* Center the text */
+  max-width: 80%; /* Restrict width */
+  padding: 0 20px;
+  margin-bottom: 40px;
 }
 
-/* Styling für die Karte */
+/* Responsive adjustments for description's font size, width, and padding */
+@media (max-width: 768px) {
+  .description {
+    font-size: 18px;
+    max-width: 90%;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 390px) {
+  .description {
+    font-size: 16px; 
+    max-width: 95%;
+    padding: 0 5px;
+    margin-bottom: 30px;
+  }
+}
+
+/* General Styling for the Map */
 #map {
-  width: 100vw; /* Full width */
-  height: calc(100vh - 320px); /* Dynamically set height: 100% viewport height minus total height of info, legend, and button */
+  width: 100vw; /* Full viewport width */
+  height: calc(100vh - 380px); /* Dynamic height based on viewport */
   max-width: 100%;
-  margin: 0 auto; /* Center horizontally */
+  margin: 0 auto;
   position: relative;
-  z-index: 0;
+  z-index: 0; /* Ensure map is below other elements when needed */
 }
 
-/* Styling für den Zurücksetzen-Button */
+/* Responsive adjustments for map height */
+@media (max-width: 768px) {
+  #map {
+    height: calc(100vh - 400px); /* Increase height on smaller screens */
+  }
+}
+
+@media (max-width: 390px) {
+  #map {
+    height: calc(100vh - 460px); /* Further increase height for very small screens */
+  }
+}
+
+/* Styling for the Reset Button Container */
 #reset-container {
   position: absolute;
   top: 10px;
   left: 50%;
-  transform: translateX(-50%); /* Zentriert den Button horizontal */
-  z-index: 999; /* Hoher z-index für Sichtbarkeit */
+  transform: translateX(-50%); /* Center the button horizontally */
+  z-index: 999; /* Ensure button appears on top */
 }
 
+/* Reset Button Styling */
 .reset-map-button {
   background-color: #ebeaea;
   border: 1px solid #000;
@@ -93,21 +154,24 @@ html, body {
   font-size: 14px;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s; /* Smooth transition on hover */
 }
 
+/* Hover effect for the reset button */
 .reset-map-button:hover {
   background-color: #e0e0e0;
   border-color: #555;
   color: #555;
 }
 
+/* Legend section styling */
 .legend-section {
   display: flex;
-  align-items: center; /* Zentriert die Items vertikal */
-  justify-content: center; /* Zentriert die Items horizontal */
-  flex-wrap: wrap; /* Erlaubt Umbruch bei kleineren Bildschirmen */
+  align-items: center; /* Vertically center items */
+  justify-content: center; /* Horizontally center items */
+  flex-wrap: wrap; /* Wrap items on smaller screens */
   margin: 20px auto;
-  max-width: 90%; /* Begrenzung der Breite */
+  max-width: 90%; /* Restrict max width */
   font-family: 'Open Sans', sans-serif;
   padding: 10px;
 }
@@ -115,24 +179,26 @@ html, body {
 .legend-title {
   font-weight: bold;
   font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
-  margin-right: 20px; /* Abstand zwischen dem Titel "Legende" und den Symbolen */
+  font-size: 18px;
+  margin-right: 20px; /* Spacing between legend title and items */
   margin-bottom: 5px;
 }
 
+/* Flexbox to align legend items properly */
 .legend-items {
   display: flex;
-  align-items: center; /* Elemente werden vertikal zentriert */
-  flex-wrap: wrap; /* Umbruch, wenn der Platz nicht ausreicht */
-  gap: 10px; /* Abstand zwischen den einzelnen Legenden-Items */
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px; /* Space between items */
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  margin-right: 10px; /* Abstand zwischen den IC-Linien */
+  margin-right: 10px;
 }
 
+/* Small colored box in the legend */
 .legend-color {
   display: inline-block;
   width: 20px;
@@ -143,117 +209,244 @@ html, body {
 
 .legend-label {
   font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
+  font-size: 18px;
   color: black;
 }
 
-/* Button Styling */
+/* Scroll Button for more data */
 .scroll-button {
   display: block;
   position: relative;
   margin: 20px auto;
   padding: 10px 20px;
   font-family: 'Open Sans', serif;
-  font-size: 16px;
+  font-size: 18px;
   background-color: #333;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   z-index: 3;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .scroll-button:hover {
   background-color: #555;
 }
 
-/* Popup Window Styling */
+/* Unified Styling for control buttons */
+.control-button,
+.ranking-toggle-button {
+  font-size: 18px; 
+  height: 40px; 
+  padding: 0 15px;
+  cursor: pointer;
+  border: 1px solid #333; 
+  background-color: #333; 
+  color: white;
+  outline: none;
+  border-radius: 5px;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  width: 230px; 
+  flex: 1; 
+}
+
+/* Active state styling for buttons */
+.control-button.active,
+.ranking-toggle-button.active {
+  background-color: #555; 
+}
+
+/* Hover effect for buttons */
+.control-button:hover,
+.ranking-toggle-button:hover {
+  background-color: #555; 
+}
+
+/* Dropdown styling */
+.control-dropdown {
+  appearance: none; /* Remove default dropdown arrow */
+  height: 40px;
+  width: 150px;
+  padding: 0 15px;
+  border: 1px solid #333;
+  background-color: #333;
+  color: white;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23FFFFFF" d="M2 4l4 4 4-4"/></svg>'); /* Custom arrow */
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  border-radius: 5px;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+}
+
+/* Dropdown focus styling */
+.control-dropdown:focus {
+  border-color: #888;
+}
+
+/* Dropdown wrapper for alignment */
+.dropdown-wrapper {
+  display: flex;
+  align-items: center; 
+  background-color: #333;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+/* Dropdown label */
+.dropdown-title {
+  font-size: 18px;
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  margin-right: 0px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+}
+
+/* Toggle button container styling */
+.toggle-button-container,
+.ranking-toggle-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; /* Space between buttons */
+  max-width: 500px;
+  margin: 20px auto; 
+}
+
+/* Popup window styling */
 .popup-window {
-  position: absolute;
-  top: 400px;
-  left: 20px;
-  width: 250px; /* Adjusted to make the popup more square */
+  position: absolute; 
+  width: 300px; 
+  height: auto; 
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 15px; /* Adjusted padding */
+  padding: 15px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  z-index: 20;
-  display: none;
+  z-index: 20; 
+  display: none; 
+  left: 5%; 
+  top: 30%; 
 }
 
+/* Popup Title Styling */
 .popup-title {
-  font-size: 16px;
+  font-size: 20px;
   font-family: 'Open Sans', sans-serif;
   color: #333;
   font-weight: bold;
-  margin-bottom: 5px; /* Reduced margin */
+  margin-bottom: 5px;
 }
 
+/* Line Description Styling */
 .line-description {
-  font-size: 14px;
+  font-size: 18px;
   font-family: 'Open Sans', sans-serif;
   color: #333;
-  margin-bottom: 5px; /* Adjusted margin */
+  margin-bottom: 20px;
 }
 
+/* Additional Information Styling */
 #additional-info {
-  font-size: 13px; /* Smaller font for additional info */
+  font-size: 16px;
   font-family: 'Open Sans', sans-serif;
-  color: #555; /* Gray color */
+  color: #555;
   margin-bottom: 15px;
 }
 
-/* Circle Styles */
+/* Circle Container in Popup */
 .circle-container {
   display: flex;
-  justify-content: space-around; /* Adjusted to bring circles closer */
-  margin-top: 10px; /* Reduced margin */
+  justify-content: space-around;
+  margin-top: 10px;
 }
 
 .circle {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: black;
 }
 
 .circle.delayed {
-  background-color: rgba(255, 165, 0, 0.6); /* Orange with 80% opacity */
+  background-color: rgba(255, 165, 0, 0.6);
 }
 
 .circle.cancelled {
-  background-color: rgba(255, 0, 0, 0.6); /* Red with 80% opacity */
+  background-color: rgba(255, 0, 0, 0.6);
 }
 
+/* Label under circles */
 .circle-label {
   font-size: 14px;
   text-align: center;
-  margin-top: 10px; /* Adjusted margin to place text under circles */
+  margin-top: 5px;
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Align labels directly under the circles */
-.circle-container .circle + .circle-label {
-  margin-top: 5px; /* Small margin to align labels */
-}
-
-/* Data section should cover all content down to the footer */
+/* Data Section Container Styling */
 .data-section {
   padding: 50px 20px;
-  background-color: #f4f4f4;
+  background-color: #f4f4f4; /* Light background color */
   text-align: center;
-  min-height: calc(100vh - 100px); /* Deckt mindestens den Bildschirmbereich ab */
-  width: 100%; /* Deckt die gesamte Breite ab */
+  min-height: calc(100vh - 100px); /* Adjust height dynamically */
+  width: 100%; 
+  box-sizing: border-box; 
+  overflow-x: hidden; 
 }
 
-/* Haupttitel in der Data Section (z.B. "Zusätzliche Daten und Statistiken") */
+/* Chart container styling */
+.chart-container {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1000px; 
+  margin: 20px auto; 
+}
+
+/* Ensure charts are responsive */
+.chart-container canvas {
+  display: block;
+  width: 100% !important;  
+  height: auto !important;  
+}
+
+/* Responsive Design for small screens (390px and below) */
+@media (max-width: 390px) {
+  .chart-container {
+    padding: 5px; 
+  }
+
+  .chart-container canvas {
+    height: 360px !important;  
+  }
+}
+
+/* Responsive Design for tablets */
+@media (max-width: 768px) {
+  .chart-container {
+    padding: 5px; 
+  }
+
+  .chart-container canvas {
+    height: 400px !important;  
+  }
+}
+
+/* Main Title in Data Section */
 .data-title {
   font-size: 42px;
   margin-bottom: 20px;
@@ -262,507 +455,474 @@ html, body {
   color: #333;
 }
 
-/* Der zusätzliche Titel oberhalb des Diagramms */
-#additional-title {
-  margin-bottom: 20px;
-  margin-top: 20px;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 19px;
-  color: #555;
-}
-
-/* Styling für den zweigeteilten Button */
-.toggle-button-container {
-  display: inline-flex;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  position: relative; /* Sicherstellen, dass der Button sich relativ zum Standard-Layout bewegt */
-}
-
-.toggle-button {
-  visibility: visible; /* Sicherstellen, dass die Buttons sichtbar sind */
-  font-size: 16px;
-  padding: 10px 20px;
-  cursor: pointer;
-  border: 1px solid #555;
-  background-color: #333;
-  color: white;
-  outline: none;
-  width: 150px;
-}
-
-.left-button {
-  border-radius: 5px 0 0 5px; /* Abgerundete linke Ecken */
-  font-family: 'Open Sans', sans-serif;
-}
-
-.right-button {
-  border-radius: 0 5px 5px 0; /* Abgerundete rechte Ecken */
-  font-family: 'Open Sans', sans-serif;
-}
-
-.toggle-button:hover {
-  background-color: #555;
-}
-
-.toggle-button.active {
-  background-color: #333; /* Aktivierte Schaltfläche dunkler */
-}
-
-/* Content section for charts */
-.chart-container {
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
-  margin: 20px auto;
-  font-family: 'Open Sans', sans-serif;
-}
-
-/* Canvas-Element für das Diagramm */
-canvas {
-  display: block;
-  width: 100% !important;
-  height: auto !important;
-}
-
-/* Chart-Title Styling (optional) */
-.chartjs-title {
-  font-size: 1.5em;
-  margin-bottom: 20px;
+/* Subtitle Styling in Data Section */
+.additional-title {
+  font-size: 24px;
+  margin-top: 50px;
+  margin-bottom: 30px;
   text-align: center;
-}
-
-.chart-bar {
-position: relative;
-}
-
-/* Erklärungstext Styling */
-.chart-explanation {
-  max-width: 1000px; /* Gleiche Breite wie das Chart */
-  margin: 20px auto; /* Zentrieren und Abstand nach oben/unten */
-  font-size: 16px; /* Etwas kleinerer Text für die Erklärung */
+  color: #333;
   font-family: 'Open Sans', sans-serif;
-  line-height: 1.5; /* Verbessert die Lesbarkeit */
-  color: #555; /* Leicht abgedunkelte Textfarbe */
-  text-align: left; /* Links ausgerichteter Text */
-  padding: 10px; /* Innenabstand für Lesbarkeit */
-  background-color: #f9f9f9; /* Heller Hintergrund zur Hervorhebung */
-  border-radius: 5px; /* Leichte Abrundung der Ecken */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für bessere Sichtbarkeit */
-  text-align: justify;
 }
 
-/* Styling für den neuen Untertitel unterhalb des ersten Diagramms */
-#ranking-subtitle {
-  font-size: 19px; /* Größe des Untertitels */
-  margin-top: 40px; /* Abstand zum vorherigen Inhalt */
-  margin-bottom: 20px; /* Abstand nach unten */
-  font-family: 'Open Sans', sans-serif;
-  color: #333; /* Textfarbe */
+/* Responsive Design for Subtitles */
+@media (max-width: 768px) {
+  .additional-title {
+    font-size: 20px;
+  }
 }
 
-/* Styling für den zweigeteilten Button (Ranking Section) */
-.ranking-toggle-button-container {
-  display: inline-flex;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  position: relative;
+@media (max-width: 390px) {
+  .additional-title {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
 }
 
+/* Unified Styling for Toggle Buttons */
+.control-button,
 .ranking-toggle-button {
-  visibility: visible;
-  font-size: 16px;
-  padding: 10px 20px;
+  font-size: 14px;
+  height: 40px;
+  padding: 0 15px;
   cursor: pointer;
-  border: 1px solid #555;
+  border: 1px solid #333;
   background-color: #333;
   color: white;
   outline: none;
-  width: 150px;
-}
-
-.ranking-left-button {
-  border-radius: 5px 0 0 5px;
+  border-radius: 5px;
   font-family: 'Open Sans', sans-serif;
+  text-align: center;
+  width: 230px;
+  flex: 1;
 }
 
-.ranking-right-button {
-  border-radius: 0 5px 5px 0;
-  font-family: 'Open Sans', sans-serif;
-}
-
+/* Hover effect for buttons */
+.control-button:hover,
 .ranking-toggle-button:hover {
   background-color: #555;
 }
 
-.ranking-toggle-button.active {
+/* Active state for buttons */
+.ranking-toggle-button.active,
+.control-button.active {
+  background-color: #555;
+  border: 1px solid #888;
+  color: #fff;
+}
+
+/* Active button hover state */
+.ranking-toggle-button.active:hover,
+.control-button.active:hover {
+  background-color: #444;
+}
+
+/* Dropdown-specific styling */
+.control-dropdown {
+  appearance: none;
+  height: 40px;
+  width: 150px;
+  padding: 0 15px;
+  border: 1px solid #333;
   background-color: #333;
-}
-
-/* Styling für den Ranking chart) */
-.chart-container {
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-/* Erklärungstext Styling (für Ranking Chart) */
-.chart-explanation {
-  max-width: 1000px; /* Gleiche Breite wie das Chart */
-  margin: 20px auto; /* Zentrieren und Abstand nach oben/unten */
-  font-size: 16px; /* Etwas kleinerer Text für die Erklärung */
-  line-height: 1.5; /* Verbessert die Lesbarkeit */
-  color: #555; /* Leicht abgedunkelte Textfarbe */
-  text-align: left; /* Links ausgerichteter Text */
-  padding: 10px; /* Innenabstand für Lesbarkeit */
-  background-color: #f9f9f9; /* Heller Hintergrund zur Hervorhebung */
-  border-radius: 5px; /* Leichte Abrundung der Ecken */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für bessere Sichtbarkeit */
-  text-align: justify;
+  color: white;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23FFFFFF" d="M2 4l4 4 4-4"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  border-radius: 5px;
   font-family: 'Open Sans', sans-serif;
+  text-align: center;
 }
 
-/* Zwischentitel: Wozu diese Datenvisualisierung? */
+/* Focus state styling for dropdown */
+.control-dropdown:focus {
+  border-color: #888;
+}
+
+/* Dropdown wrapper */
+.dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+/* Dropdown label styling */
+.dropdown-title {
+  font-size: 14px;
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  margin-right: 0px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+}
+
+/* Button container styling */
+.toggle-button-container,
+.ranking-toggle-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+/* Subtitle Styling */
 .subtitle {
-  font-size: 19px;
-  margin-top: 40px;
-  margin-bottom: 20px;
+  font-size: 24px;
+  margin-top: 50px;
+  margin-bottom: 30px;
   color: #333;
   text-align: center;
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Erklärungstext: Wozu Datenvisualisierung? */
-.chart-explanation {
-  max-width: 1000px; /* Gleiche Breite wie das Chart */
-  margin: 20px auto; /* Zentrieren und Abstand nach oben/unten */
-  font-size: 16px; /* Etwas kleinerer Text für die Erklärung */
-  line-height: 1.5; /* Verbessert die Lesbarkeit */
-  color: #555; /* Leicht abgedunkelte Textfarbe */
-  text-align: left; /* Links ausgerichteter Text */
-  padding: 10px; /* Innenabstand für Lesbarkeit */
-  background-color: #f9f9f9; /* Heller Hintergrund zur Hervorhebung */
-  border-radius: 5px; /* Leichte Abrundung der Ecken */
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Schatten für bessere Sichtbarkeit */
-  text-align: justify;
-  font-family: 'Open Sans', sans-serif;
+/* Responsive adjustments for subtitles */
+@media (max-width: 768px) {
+  .subtitle {
+    font-size: 20px;
+  }
 }
 
-/* Responsive adjustments for the Data Section on tablets and smaller screens */
-@media (max-width: 1024px) {
-  /* Allgemeine Anpassungen */
-  html, body {
-    font-size: 90%; /* Reduziert die Basis-Schriftgröße */
+@media (max-width: 390px) {
+  .subtitle {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-bottom: 20px;
   }
+}
 
-  #map {
-    height: calc(100vh - 420px); /* Kleinere Höhe für die Karte */
-  }
+/* Chart Explanation */
+.chart-explanation {
+  max-width: 1000px;
+  margin: 20px auto;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.5;
+  color: #555;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: justify;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
 
-  .info-container {
-    max-width: 95%; /* Nimmt fast die gesamte Bildschirmbreite ein */
-    padding: 0 15px; /* Kleinerer Abstand zum Rand */
-  }
-
-  .title {
-    font-size: 32px; /* Kleinere Schriftgröße für den Titel */
-  }
-
-  .description {
-    font-size: 18px; /* Kleinere Schriftgröße für den Text */
-  }
-
-  .scroll-button {
-    padding: 8px 15px;
-    font-size: 14px;
-  }
-
-  .legend-title {
-    font-size: 14px;
-    margin-right: 10px;
-  }
-
-  .legend-label {
-    font-size: 12px;
-  }
-
-  .legend-color {
-    width: 15px;
-    height: 8px;
-  }
-
-  .legend-section {
-    padding: 5px;
-  }
-
-  .legend-items {
-    gap: 5px; /* Kleinere Abstände zwischen den Items */
-  }
-
-  .footer {
-    font-size: 14px;
-    height: auto;
-    padding: 10px;
-  }
-
-  #reset-container {
-    top: 5px; /* Weniger Abstand vom oberen Rand der Karte */
+/* Hide scrollbar on small devices */
+@media (max-width: 390px) {
+  .chart-explanation::-webkit-scrollbar {
+    display: none;
   }
 
   .reset-map-button {
-    padding: 8px 15px; /* Kleinere Polsterung für den Button */
-    font-size: 12px; /* Kleinere Schriftgröße */
+    font-size: 12px;
   }
 
-  /* Data Section: Titel und Inhalt */
-  .data-section {
-    padding: 30px 15px; /* Reduziert das Padding */
-    max-width: 95%; /* Maximale Breite für kleinere Bildschirme */
-    margin: 0 auto; /* Zentriert die Data Section */
+  .scroll-button {
+    font-size: 14px;
   }
 
-  .data-title {
-    font-size: 28px; /* Kleinere Schriftgröße für den Titel */
-  }
-
-  .chart-container {
-    max-width: 90%; /* Diagramme nehmen 90 % der Breite ein */
-    margin: 20px auto;
-  }
-
-  .chart-explanation {
-    font-size: 14px; /* Kleinere Schriftgröße für Erklärungen */
-    line-height: 1.4;
-    max-width: 90%; /* Die maximale Breite der Erklärung wird reduziert */
-    margin: 10px auto;
-  }
-
-  #ranking-subtitle {
-    font-size: 20px; /* Kleinere Schriftgröße für den Untertitel */
-    margin-top: 30px;
-  }
-
-  .toggle-button-container,
-  .ranking-toggle-button-container {
-    width: 100%; /* Buttons nehmen die volle Breite ein */
-    display: flex;
-    justify-content: space-around; /* Gleichmäßige Verteilung der Buttons */
-  }
-
-  .toggle-button,
+  .control-button,
   .ranking-toggle-button {
-    font-size: 14px; /* Kleinere Schaltflächen */
-    padding: 8px 15px;
-    width: 45%; /* Schaltflächen nehmen 45% der Breite ein */
+    width: 50px;
+  }
+
+  .control-dropdown {
+    width: 50px;
   }
 
   .popup-window {
-    width: 250px; /* Popup etwas schmaler auf kleinen Bildschirmen */
-    top: 20px; /* Popup näher an den oberen Rand setzen */
-    left: 50%; /* Zentrieren des Popups */
-    transform: translateX(-50%); /* Korrekte Zentrierung */
-    padding: 15px; /* Reduziertes Padding */
-  }
-
-  .circle {
-    width: 60px; /* Kleinere Kreise */
-    height: 60px;
-    font-size: 16px; /* Kleinere Schriftgröße in den Kreisen */
-  }
-
-  .circle-label {
-    font-size: 12px; /* Kleinere Labels unter den Kreisen */
+    width: 50vw;
+    left: 4%;
   }
 
   .popup-title {
-    font-size: 16px; /* Kleinere Titelgröße */
+    font-size: 14px;
   }
 
   .line-description {
-    font-size: 13px; /* Kleinere Schriftgröße für die Beschreibung */
-  }
-}
-
-/* Responsive adjustments for the Data Section on smartphones and very small screens */
-@media (max-width: 450px) {
-
-  /* Allgemeine Anpassungen */
-  #map {
-    height: calc(100vh - 440px); /* Mehr Platz für die Info- und Legendenabschnitte */
-  }
-
-  #reset-container {
-    top: 5px; /* Weniger Abstand vom oberen Rand */
-  }
-
-  .reset-map-button {
-    padding: 6px 12px; /* Noch kleinere Polsterung */
-    font-size: 10px; /* Noch kleinere Schriftgröße */
-  }
-
-  .info-container {
-    max-width: 98%; /* Nimmt fast die gesamte Bildschirmbreite ein */
-    padding: 0 10px; /* Noch kleinerer Abstand zum Rand */
-  }
-
-  .title {
-    font-size: 22px; /* Kleinere Schriftgröße für den Titel */
-    margin-top: 20px;
-  }
-
-  .description {
-    font-size: 14px; /* Noch kleinere Schriftgröße für den Text */
-    margin-bottom: 20px;
-  }
-
-  .scroll-button {
-    padding: 6px 12px;
     font-size: 12px;
-    width: auto;
-    margin: 10px auto; /* Zentriert den Button */
-    margin-bottom: 20px;
   }
 
-  .legend-title {
+  .chart-explanation {
     font-size: 12px;
-    margin-right: 8px;
-    margin-bottom: 5px;
-  }
-
-  .legend-label {
-    font-size: 12px; /* Kleinere Schriftgröße */
-  }
-
-  .legend-color {
-    width: 10px; /* Kleinere Farbkästchen */
-    height: 5px;
-  }
-
-  .legend-section {
-    padding: 5px;
-  }
-
-  .legend-items {
-    gap: 4px; /* Weniger Abstand zwischen den Items */
-  }
-
-  .legend-item {
-    margin-right: 6px; /* Kleinere Abstände zwischen den IC-Linien */
-  }
-
-  .footer {
-    font-size: 10px;
-    height: auto;
     padding: 8px;
   }
 
-  /* Data Section: Titel und Inhalt */
-  .data-section {
-    padding: 15px 10px; /* Mehr Platz links und rechts */
-    max-width: 100%; /* Maximale Breite der Data Section */
+  /* Legend Styling Adjustments */
+  .legend-section {
+    flex-direction: column;
+    padding: 10px;
   }
 
-  .data-title {
-    font-size: 22px; /* Kleinere Schriftgröße für den Titel */
-    margin-top: 20px;
+  .legend-title {
+    font-size: 14px;
+    margin-bottom: 8px;
   }
 
-  /* Titel unterhalb der Charts (Verspätungen und Ausfälle) */
-  #additional-title {
-    font-size: 16px; /* Kleinere Schriftgröße */
-    margin-right: 15px; /* Rechtsabstand von 15px */
-    margin-left: 15px; /* Linksabstand von 15px */
-    text-align: center; /* Zentrieren */
+  .legend-items {
+    gap: 4px;
   }
 
-  .chart-container {
-    max-width: 100%; /* Diagramme passen sich der Breite des Containers an */
-    margin: 10px auto; /* Zentriert die Diagramme */
-    margin-right: 20px;
-    padding: 0 15px; /* Abstand von 15px auf der linken und rechten Seite */
+  .legend-item {
+    font-size: 10px;
   }
 
-  /* Sicherstellen, dass alle IC-Linien sichtbar sind */
-  canvas {
-    width: 100% !important; /* Volle Breite des Containers für das Diagramm */
-    height: auto !important; /* Höhe wird proportional zur Breite eingestellt */
-    overflow: visible; /* Kein Abschneiden der Diagramme */
+  .legend-label {
+    font-size: 14px;
+  }
+}
+
+/* Responsive Design for Tablets */
+@media (max-width: 768px) {
+  .reset-map-button {
+    font-size: 14px;
   }
 
-  /* Für die Charts: Rechts 15px Abstand */
-  .chartjs-render-monitor {
-    margin-right: 15px;
-    margin-left: 15px;
+  .scroll-button {
+    font-size: 18px;
   }
 
-  /* Text-Erklärungen unter den Diagrammen */
-  .chart-explanation {
-    font-size: 12px; /* Noch kleinere Schriftgröße für Erklärungen */
-    line-height: 1.3;
-    max-width: 100%; /* Maximale Breite der Erklärung */
-    margin-left: 10px;
-    margin-right: 32px;
-    text-align: justify;
-  }
-
-  /* Verkleinern von "Welchen Zweck hat diese Datenvisualisierung?" */
-  #visualization-purpose {
-    font-size: 16px; /* Verkleinerte Schriftgröße */
-    margin: 20px auto; /* Zentriert und mit Abstand */
-    padding: 0 15px; /* 15px Polsterung links und rechts */
-  }
-
-  #ranking-subtitle {
-    font-size: 16px; /* Noch kleinere Schriftgröße für den Untertitel */
-    margin: 20px auto; /* Zentriert und mit Abstand */
-    padding: 0 15px; /* 15px Polsterung links und rechts */
-  }
-
-  .toggle-button-container,
-  .ranking-toggle-button-container {
-    width: 100%; /* Buttons nehmen die volle Breite ein */
-    display: flex;
-    justify-content: center; /* Zentriert die Buttons */
-    gap: 10px; /* Abstand zwischen den Buttons */
-  }
-
-  .toggle-button,
+  .control-button,
   .ranking-toggle-button {
-    font-size: 10px; /* Kleinere Schaltflächen */
-    padding: 6px 10px;
-    width: auto; /* Dynamische Breite, damit sie gleich groß wie der Mehr Informationen-Button sind */
-    min-width: 100px; /* Mindestbreite, um den Inhalt klar anzuzeigen */
-    text-align: center; /* Zentriert den Text in den Buttons */
+    width: 180px;
+  }
+
+  .control-dropdown {
+    width: 160px;
+  }
+
+  .chart-explanation {
+    font-size: 16px;
+    padding: 20px;
+  }
+
+  .legend-section {
+    flex-direction: row;
+    padding: 10px;
+  }
+
+  .legend-title {
+    font-size: 18px;
+  }
+
+  .legend-items {
+    gap: 10px;
+  }
+
+  .legend-item {
+    font-size: 16px;
+  }
+}
+/* Dropdown-specific styling */
+.control-dropdown {
+  appearance: none;
+  height: 40px;
+  width: 150px;
+  padding: 0 15px;
+  border: 1px solid #333;
+  background-color: #333;
+  color: white;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23FFFFFF" d="M2 4l4 4 4-4"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+  border-radius: 5px;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+}
+
+/* Focus state styling for dropdown */
+.control-dropdown:focus {
+  border-color: #888;
+}
+
+/* Dropdown wrapper */
+.dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+/* Dropdown label styling */
+.dropdown-title {
+  font-size: 14px;
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  margin-right: 0px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  font-weight: normal;
+}
+
+/* Button container styling */
+.toggle-button-container,
+.ranking-toggle-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+/* Subtitle Styling */
+.subtitle {
+  font-size: 24px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Responsive adjustments for subtitles */
+@media (max-width: 768px) {
+  .subtitle {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 390px) {
+  .subtitle {
+    font-size: 18px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Chart Explanation */
+.chart-explanation {
+  max-width: 1000px;
+  margin: 20px auto;
+  font-size: 16px;
+  font-family: 'Open Sans', sans-serif;
+  line-height: 1.5;
+  color: #555;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: justify;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+}
+
+/* Hide scrollbar on small devices */
+@media (max-width: 390px) {
+  .chart-explanation::-webkit-scrollbar {
+    display: none;
+  }
+
+  .reset-map-button {
+    font-size: 12px;
+  }
+
+  .scroll-button {
+    font-size: 14px;
+  }
+
+  .control-button,
+  .ranking-toggle-button {
+    width: 50px;
+  }
+
+  .control-dropdown {
+    width: 50px;
   }
 
   .popup-window {
-    width: 220px; /* Noch schmaler auf sehr kleinen Bildschirmen */
-    top: 10px; /* Popup näher an den oberen Rand setzen */
-    left: 50%; /* Popup zentrieren */
-    transform: translateX(-50%); /* Korrekte Zentrierung */
-    padding: 10px; /* Reduziertes Padding */
-  }
-
-  .circle {
-    width: 50px; /* Noch kleinere Kreise */
-    height: 50px;
-    font-size: 14px; /* Noch kleinere Schriftgröße in den Kreisen */
-  }
-
-  .circle-label {
-    font-size: 10px; /* Noch kleinere Labels unter den Kreisen */
+    width: 50vw;
+    left: 4%;
   }
 
   .popup-title {
-    font-size: 14px; /* Kleinere Titelgröße */
+    font-size: 14px;
   }
 
   .line-description {
-    font-size: 12px; /* Kleinere Schriftgröße für die Beschreibung */
+    font-size: 12px;
+  }
+
+  .chart-explanation {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* Legend Styling Adjustments */
+  .legend-section {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .legend-title {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .legend-items {
+    gap: 4px;
+  }
+
+  .legend-item {
+    font-size: 10px;
+  }
+
+  .legend-label {
+    font-size: 14px;
+  }
+}
+
+/* Responsive Design for Tablets */
+@media (max-width: 768px) {
+  .reset-map-button {
+    font-size: 14px;
+  }
+
+  .scroll-button {
+    font-size: 18px;
+  }
+
+  .control-button,
+  .ranking-toggle-button {
+    width: 180px;
+  }
+
+  .control-dropdown {
+    width: 160px;
+  }
+
+  .chart-explanation {
+    font-size: 16px;
+    padding: 20px;
+  }
+
+  .legend-section {
+    flex-direction: row;
+    padding: 10px;
+  }
+
+  .legend-title {
+    font-size: 18px;
+  }
+
+  .legend-items {
+    gap: 10px;
+  }
+
+  .legend-item {
+    font-size: 16px;
   }
 }

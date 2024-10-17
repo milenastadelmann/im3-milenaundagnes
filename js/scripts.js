@@ -1,51 +1,116 @@
-// Replace with your actual Mapbox access token
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWlsZW5hc3RhZGVsbWFubiIsImEiOiJjbTFxdHRtY2wwM2VqMmtxem82emUzamtuIn0.P2B20sBbGljY0rGXZwOqeQ';
+// Mapbox setup
+mapboxgl.accessToken = 'pk.eyJ1IjoibWlsZW5hc3RhZGVsbWFubiIsImEiOiJjbTFxdHRtY2wwM2VqMmtxem82emUzamtuIn0.P2B20sBbGljY0rGXZwOqeQ';
+const map = new mapboxgl.Map({
+  container: 'map', 
+  style: 'mapbox://styles/mapbox/light-v10',
+});
 
-    const map = new mapboxgl.Map({
-      container: 'map', // Container ID
-      style: 'mapbox://styles/mapbox/light-v10', // Map style
-    });
-    
-    // Define the bounding box for Switzerland (southwest and northeast corners)
-    const switzerlandBounds = [
-      [5.9559, 45.8179], // Southwest corner (Genève, southwest)
-      [10.4920, 47.8085] // Northeast corner (Bodensee area, northeast)
-    ];
-    
-    // Use fitBounds to adjust the map to Switzerland's bounds with additional padding for zoom effect
-    map.fitBounds(switzerlandBounds, {
-      padding: { top: 50, bottom: 50, left: 50, right: 50 }, // Reduced padding for more zoom effect
-      maxZoom: 8 // Adjust the zoom level to be closer to Switzerland
-    });
-    
-    // Add zoom and rotation controls to the map
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    
-    // Add a resize event listener to ensure the map resizes properly and keeps Switzerland in view
-    window.addEventListener('resize', function () {
-      map.fitBounds(switzerlandBounds, {
-        padding: { top: 50, bottom: 50, left: 50, right: 50 }, // Ensure padding matches the original view
-        maxZoom: 8 // Maintain the same zoom limit
-      });
-    });
+const switzerlandBounds = [
+  [5.9559, 45.8179], 
+  [10.4920, 47.8085]
+];
 
-  // Reset button functionality
-document.getElementById('reset-map-btn').addEventListener('click', function () {
+map.fitBounds(switzerlandBounds, {
+  padding: { top: 50, bottom: 50, left: 50, right: 50 }, 
+  maxZoom: 8
+});
+
+map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+// Resizing map on window resize
+window.addEventListener('resize', function () {
+  map.fitBounds(switzerlandBounds, { padding: { top: 50, bottom: 50, left: 50, right: 50 }, maxZoom: 8 });
+});
+
+// Scroll to data section (only one function is enough)
+document.getElementById('scroll-button').addEventListener('click', function() {
+  document.getElementById('data-section').scrollIntoView({ behavior: 'smooth' });
+});
+
+ // Reset button functionality
+ document.getElementById('reset-map-btn').addEventListener('click', function () {
   map.fitBounds(switzerlandBounds, {
     padding: { top: 50, bottom: 50, left: 50, right: 50 },
     maxZoom: 8
   });
 });
 
-// Scroll to data section when the button is clicked
-document.getElementById('scroll-button').addEventListener('click', function() {
-  document.getElementById('data-section').scrollIntoView({ behavior: 'smooth' });
-});
+document.addEventListener("DOMContentLoaded", function () {
+  // Get elements by their IDs
+  const gesternButton = document.getElementById("previous-day-btn");
+  const dropdownMenu = document.getElementById("ic-line-dropdown");
+  const rankingPreviousDayButton = document.getElementById("ranking-previous-day-btn");
+  const rankingWeekViewButton = document.getElementById("ranking-week-view-btn");
 
-    // Smooth scroll function to the data section
-    function scrollToData() {
-      document.getElementById('data-section').scrollIntoView({ behavior: 'smooth' });
+  // Set the "Gestern" button as active on page load
+  if (gesternButton) {
+    gesternButton.classList.add("active");
+  }
+
+  // Event listener for the "Gestern" button
+  if (gesternButton) {
+    gesternButton.addEventListener("click", function () {
+      // Activate the "Gestern" button and deactivate others
+      setActiveButton(gesternButton);
+    });
+  }
+
+  // Event listener for dropdown change
+  if (dropdownMenu) {
+    dropdownMenu.addEventListener("change", function () {
+      // Deactivate the "Gestern" button
+      if (gesternButton) {
+        gesternButton.classList.remove("active");
+      }
+      
+      // Deactivate other ranking buttons
+      if (rankingPreviousDayButton) {
+        rankingPreviousDayButton.classList.remove("active");
+      }
+      if (rankingWeekViewButton) {
+        rankingWeekViewButton.classList.remove("active");
+      }
+    });
+  }
+
+  // Event listener for the "Vortag" ranking button
+  if (rankingPreviousDayButton) {
+    rankingPreviousDayButton.addEventListener("click", function () {
+      // Activate the "Vortag" button and deactivate others
+      setActiveButton(rankingPreviousDayButton);
+    });
+  }
+
+  // Event listener for the "Vorwoche" ranking button
+  if (rankingWeekViewButton) {
+    rankingWeekViewButton.addEventListener("click", function () {
+      // Activate the "Vorwoche" button and deactivate others
+      setActiveButton(rankingWeekViewButton);
+    });
+  }
+
+  // Function to manage the active state of buttons
+  function setActiveButton(activeButton) {
+    // Remove active state from all buttons
+    if (gesternButton) {
+      gesternButton.classList.remove("active");
     }
+    if (rankingPreviousDayButton) {
+      rankingPreviousDayButton.classList.remove("active");
+    }
+    if (rankingWeekViewButton) {
+      rankingWeekViewButton.classList.remove("active");
+    }
+
+    // Set the active state to the clicked button
+    activeButton.classList.add("active");
+
+    // Reset dropdown to default value
+    if (dropdownMenu) {
+      dropdownMenu.value = "";
+    }
+  }
+});
 
      // Separate sources and layers for each IC line
      map.on('load', function () {
@@ -676,17 +741,36 @@ map.on('click', function (e) {
 const popup = document.getElementById('popup-window');
 const dataSection = document.getElementById('data-section');
 
+// Funktion zum Ausblenden des Popups
+function hidePopup() {
+  if (popup.style.display === 'block') {
+    popup.style.display = 'none'; // Popup ausblenden
+  }
+}
+
 // Intersection Observer konfigurieren, um die Data Section zu überwachen
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting && popup.style.display === 'block') {
-      popup.style.display = 'none'; // Popup ausblenden, wenn Data Section sichtbar wird
+    if (entry.isIntersecting) {
+      hidePopup(); // Popup ausblenden, wenn Data Section sichtbar wird
     }
   });
-});
+}, { threshold: 0.1 }); // Trigger when at least 10% of the data section is visible
 
 // Überwachung der Data Section starten
 observer.observe(dataSection);
+
+// Scroll Event als Fallback verwenden, um sicherzustellen, dass das Popup geschlossen wird
+window.addEventListener('scroll', function() {
+  const dataSectionTop = dataSection.getBoundingClientRect().top;
+  const windowHeight = window.innerHeight;
+
+  // Wenn der obere Rand der Data Section sichtbar ist, blende das Popup aus
+  if (dataSectionTop <= windowHeight) {
+    hidePopup();
+  }
+});
+
 
 // Funktion zum Schließen des Popups, wenn auf die Karte geklickt wird
 map.on('click', function (e) {
@@ -783,10 +867,33 @@ async function fetchData() {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
+    console.log("Fetched Data:", data); // Debug: Log fetched data to verify its content
     return data;
   } catch (error) {
     console.error('Fetch error:', error);
   }
+}
+
+// Function to filter data from the last 7 days
+function filterLast7Days(data) {
+  const last7Days = {};
+  const now = new Date();
+
+  // Filter entries within the last 7 days, adjusting to represent the previous day's data
+  Object.keys(data).forEach(line => {
+    last7Days[line] = data[line].filter(entry => {
+      const entryDate = new Date(entry.zeit);
+      entryDate.setDate(entryDate.getDate() - 1); // Adjust to the previous day (data represents the day before)
+
+      // Calculate the difference in days from today
+      const diffDays = Math.floor((now - entryDate) / (1000 * 60 * 60 * 24));
+
+      // We want data from the past 7 days, excluding today itself
+      return diffDays >= 1 && diffDays <= 7; // Include data from 1 to 7 days ago
+    });
+  });
+
+  return last7Days;
 }
 
 // Function to create the "Vortag" chart (previous day chart)
@@ -800,24 +907,35 @@ async function createChart() {
     // Extract data for the previous day
     linien.forEach(linie => {
       const latestEntry = data[linie][data[linie].length - 1];
-      const abfahrten = latestEntry.abfahrten;
-      const verspaetet = latestEntry.verspaetet;
-      const ausfall = latestEntry.ausfall;
-      const pünktlich = abfahrten - verspaetet - ausfall;
+      if (latestEntry) {
+        const entryDate = new Date(latestEntry.zeit);
+        entryDate.setDate(entryDate.getDate() - 1); // Adjust to the previous day
 
-      yesterdaysData.push({
-        linie: linie,
-        pünktlich: pünktlich,
-        verspaetet: verspaetet,
-        ausfall: ausfall,
-        datum: latestEntry.zeit.split(' ')[0] // Only the date
-      });
+        const abfahrten = latestEntry.abfahrten;
+        const verspaetet = latestEntry.verspaetet;
+        const ausfall = latestEntry.ausfall;
+        const puenktlich = abfahrten - verspaetet - ausfall;
+
+        // Format the date as "Weekday, day.month"
+        const options = { weekday: 'long' };
+        const weekdayName = entryDate.toLocaleDateString('de-DE', options);
+        const dayMonth = `${entryDate.getDate()}.${(entryDate.getMonth() + 1).toString().padStart(2, '0')}`;
+        const formattedLabel = `${weekdayName}, ${dayMonth}`;
+
+        yesterdaysData.push({
+          linie: linie,
+          puenktlich: puenktlich,
+          verspaetet: verspaetet,
+          ausfall: ausfall,
+          datum: formattedLabel // Only the formatted label
+        });
+      }
     });
 
     // Line labels and corresponding data
     const linienLabels = yesterdaysData.map(entry => entry.linie);
-    const pünktlichData = yesterdaysData.map(entry => entry.pünktlich);
-    const verspätetData = yesterdaysData.map(entry => entry.verspaetet);
+    const puenktlichData = yesterdaysData.map(entry => entry.puenktlich);
+    const verspaetetData = yesterdaysData.map(entry => entry.verspaetet);
     const ausfallData = yesterdaysData.map(entry => entry.ausfall);
 
     // Destroy the previous chart if it exists
@@ -825,115 +943,146 @@ async function createChart() {
       myChart.destroy();
     }
 
-    // Responsive chart context
-    const ctx = document.getElementById('myChart').getContext('2d');
+   // Responsive chart context
+   const ctx = document.getElementById('myChart').getContext('2d');
 
-    // Check if the screen width is less than 480px (mobile version)
-    const isMobile = window.innerWidth < 480;
+   
+    // Set chart height dynamically based on screen size
+    const screenWidth = window.innerWidth;
+    let chartHeight;
 
-    // Set height for mobile and larger screens
-    const chartHeight = isMobile ? 600 : 400; // 600px for mobile, 400px for larger screens
-
-    // Create a new chart for the previous day's data
-    myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: linienLabels,
-        datasets: [
-          {
-            label: 'Pünktlich',
-            data: pünktlichData,
-            backgroundColor: 'green',
-          },
-          {
-            label: 'Verspätet',
-            data: verspätetData,
-            backgroundColor: 'orange',
-          },
-          {
-            label: 'Ausfälle',
-            data: ausfallData,
-            backgroundColor: 'red',
-          }
-        ]
-      },
-      options: {
-        indexAxis: 'y', // Horizontal bar chart
-        plugins: {
-          title: {
-            display: false // Remove title
-          }
-        },
-        scales: {
-          x: {
-            stacked: true, // Stack on x-axis
-            beginAtZero: true,
-            max: 1500, // Adjust if needed
-          },
-          y: {
-            stacked: true, // Stack on y-axis
-            ticks: {
-              font: {
-                size: isMobile ? 8 : 12 // Smaller font size for mobile devices
-              }
-            }
-          }
-        },
-        maintainAspectRatio: false, // Allow custom height
-      }
-    });
-
-    // Set dynamic canvas height based on the device size
-    document.getElementById('myChart').style.height = chartHeight + 'px';
-  }
-}
-
-// Function to fetch weekly data
-async function fetchWeeklyData() {
-  try {
-    const response = await fetch('https://etl.mmp.li/sbb/etl/unload.php');
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
+    if (screenWidth < 390) {
+      chartHeight = '800px';  // Higher for very small screens
+    } else if (screenWidth < 480) {
+      chartHeight = '600px';  // Standard height for small screens
+    } else {
+      chartHeight = '400px';  // Default height for larger screens
     }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
+
+    document.getElementById('myChart').style.height = chartHeight; // Set height of the canvas
+
+
+   // Create a new chart for the previous day's data
+myChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: linienLabels,
+    datasets: [
+      {
+        label: 'Pünktlich',
+        data: puenktlichData,
+        backgroundColor: 'green',
+      },
+      {
+        label: 'Verspätet',
+        data: verspaetetData,
+        backgroundColor: 'orange',
+      },
+      {
+        label: 'Ausgefallen',
+        data: ausfallData,
+        backgroundColor: 'red',
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'x',
+    plugins: {
+      title: {
+        display: true,
+        text: `Daten vom ${yesterdaysData[0]?.datum || ''}`,
+        font: {
+          size: window.innerWidth < 480 ? 14 : 16, // Title font size
+          weight: 'bold'
+        },
+        padding: {
+          top: 20,
+          bottom: 20
+        }
+      },
+      legend: {
+        labels: {
+          font: {
+            size: window.innerWidth < 480 ? 10 : 12 // Dataset labels font size
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        title: {
+          display: true,
+          text: 'IC-Linie',
+          font: {
+            size: window.innerWidth < 480 ? 12 : 14, // X-axis title font size
+            weight: 'bold'
+          },
+          padding: {
+            top: 10
+          }
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 480 ? 12 : 14 // X-axis tick labels font size
+          }
+        }
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        max: 1200,
+        title: {
+          display: true,
+          text: 'Anzahl',
+          font: {
+            size: window.innerWidth < 480 ? 12 : 14, // Y-axis title font size
+            weight: 'bold'
+          },
+          padding: {
+            bottom: 10
+          }
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 480 ? 12 : 14 // Y-axis tick labels font size
+          }
+        }
+      }
+    },
+    maintainAspectRatio: false,
   }
+});
+}
 }
 
-// Function to process the weekly data by IC line and day
+// Function to process the weekly data for selected IC lines
 function processWeeklyData(data, selectedLines) {
   const weekData = {
-    Montag: [],
-    Dienstag: [],
-    Mittwoch: [],
-    Donnerstag: [],
-    Freitag: [],
-    Samstag: [],
-    Sonntag: []
+    Montag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Dienstag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Mittwoch: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Donnerstag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Freitag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Samstag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Sonntag: { puenktlich: 0, verspaetet: 0, ausfall: 0 }
   };
 
-  // Process data for each selected IC line and day
+  // Process data for each selected IC line
   Object.keys(data).forEach(line => {
     if (selectedLines.includes(line)) {
       data[line].forEach(entry => {
-        const date = new Date(entry.zeit);
-        const dayOfWeek = date.toLocaleDateString('de-DE', { weekday: 'long' });
+        const entryDate = new Date(entry.zeit);
+        entryDate.setDate(entryDate.getDate() - 1); // Adjust to previous day
+        const dayOfWeek = entryDate.toLocaleDateString('de-DE', { weekday: 'long' });
 
-        // Get punctual, delayed, and cancelled data for each line
-        const punctual = entry.abfahrten - entry.verspaetet - entry.ausfall;
-        const delayed = entry.verspaetet;
-        const cancelled = entry.ausfall;
+        // Calculate punctual, delayed, and cancelled trips for the entry
+        const puenktlich = entry.abfahrten - entry.verspaetet - entry.ausfall;
 
-        // Add the data to the correct day for each line
         if (weekData[dayOfWeek]) {
-          weekData[dayOfWeek].push({
-            line: line,
-            punctual: punctual,
-            delayed: delayed,
-            cancelled: cancelled
-          });
+          weekData[dayOfWeek].puenktlich += puenktlich;
+          weekData[dayOfWeek].verspaetet += entry.verspaetet;
+          weekData[dayOfWeek].ausfall += entry.ausfall;
         }
       });
     }
@@ -943,24 +1092,69 @@ function processWeeklyData(data, selectedLines) {
 }
 
 // Function to create the "Wochenverlauf" chart (weekly chart)
-function createWeeklyChart(weekData) {
-  const days = Object.keys(weekData); // Get the days (Monday to Sunday)
-  const labels = []; // Labels for X-axis (IC lines per day)
-  const punctualData = [];
-  const delayedData = [];
-  const cancelledData = [];
+async function createWeeklyChart() {
+  const data = await fetchData();
+  const last7DaysData = filterLast7Days(data);
+  const selectedLines = getSelectedLines(); // Fetch selected lines from dropdown
 
-  // Prepare the data for each day and line
-  days.forEach(day => {
-    weekData[day].forEach(entry => {
-      labels.push(`${day} - ${entry.line}`);
-      punctualData.push(entry.punctual);
-      delayedData.push(entry.delayed);
-      cancelledData.push(entry.cancelled);
+  if (!data || !selectedLines.length) {
+    return; // Exit if there's no data or no selected lines
+  }
+
+  // Filter data for selected lines and get the last 7 available entries
+  const filteredData = {};
+  Object.keys(last7DaysData).forEach(line => {
+    if (selectedLines.includes(line)) {
+      filteredData[line] = last7DaysData[line].slice(-7); // Get the last 7 entries for each line
+    }
+  });
+
+  const dateEntries = []; // To collect all dates for determining the date range
+  const weekData = {
+    Montag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Dienstag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Mittwoch: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Donnerstag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Freitag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Samstag: { puenktlich: 0, verspaetet: 0, ausfall: 0 },
+    Sonntag: { puenktlich: 0, verspaetet: 0, ausfall: 0 }
+  };
+
+  // Process data for each selected IC line
+  Object.keys(filteredData).forEach(line => {
+    filteredData[line].forEach(entry => {
+      const entryDate = new Date(entry.zeit);
+      entryDate.setDate(entryDate.getDate() - 1); // Adjust to previous day representation
+      dateEntries.push(entryDate); // Store the date for range determination
+
+      const dayOfWeek = entryDate.toLocaleDateString('de-DE', { weekday: 'long' });
+      const puenktlich = entry.abfahrten - entry.verspaetet - entry.ausfall;
+
+      if (weekData[dayOfWeek]) {
+        weekData[dayOfWeek].puenktlich += puenktlich;
+        weekData[dayOfWeek].verspaetet += entry.verspaetet;
+        weekData[dayOfWeek].ausfall += entry.ausfall;
+      }
     });
   });
 
-  // Create datasets for "Pünktlich", "Verspätet", and "Ausfall" for all IC lines per day
+  // Determine the start and end dates for the title based on dateEntries
+  dateEntries.sort((a, b) => a - b); // Sort dates to determine the range
+  const startDate = dateEntries[0];
+  const endDate = dateEntries[dateEntries.length - 1];
+
+  // Format the start and end dates for the chart title
+  const startFormatted = `${startDate.toLocaleDateString('de-DE', { weekday: 'long' })}, ${startDate.getDate()}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}`;
+  const endFormatted = `${endDate.toLocaleDateString('de-DE', { weekday: 'long' })}, ${endDate.getDate()}.${(endDate.getMonth() + 1).toString().padStart(2, '0')}`;
+  const chartTitle = `Daten vom ${startFormatted} - ${endFormatted}`;
+
+  // Prepare data for the chart
+  const days = Object.keys(weekData); // Get the days (Monday to Sunday)
+  const punctualData = days.map(day => weekData[day].puenktlich);
+  const delayedData = days.map(day => weekData[day].verspaetet);
+  const cancelledData = days.map(day => weekData[day].ausfall);
+
+  // Create datasets for "Pünktlich", "Verspätet", and "Ausfall"
   const datasets = [
     {
       label: 'Pünktlich',
@@ -973,7 +1167,7 @@ function createWeeklyChart(weekData) {
       data: delayedData
     },
     {
-      label: 'Ausfall',
+      label: 'Ausgefallen',
       backgroundColor: 'red',
       data: cancelledData
     }
@@ -987,94 +1181,108 @@ function createWeeklyChart(weekData) {
   // Responsive chart context
   const ctx = document.getElementById('myChart').getContext('2d');
 
-  // Check if the screen width is less than 480px (mobile version)
-  const isMobile = window.innerWidth < 480;
-
-  // Set height for mobile and larger screens
-  const chartHeight = isMobile ? 600 : 400; // 600px for mobile, 400px for larger screens
+  // Set chart height dynamically
+  const chartHeight = window.innerWidth < 768 ? '70vh' : '400px'; // Use viewport height for small screens
+  document.getElementById('myChart').style.height = chartHeight;
 
   // Create a new stacked bar chart for the weekly data
   myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: labels, // Labels showing each day and IC line
-      datasets: datasets // The data for punctual, delayed, and cancelled
+      labels: days, // Weekdays (Monday to Sunday)
+      datasets: datasets
     },
     options: {
-      indexAxis: 'x', // Vertical bar chart (stacked)
+      plugins: {
+        title: {
+          display: true,
+          text: chartTitle,
+          font: {
+            size: window.innerWidth < 480 ? 14 : 16, // Title font size
+            weight: 'bold'
+          },
+          padding: {
+            top: 20,
+            bottom: 20
+          }
+        },
+        legend: {
+          labels: {
+            font: {
+              size: window.innerWidth < 480 ? 10 : 12 // Dataset labels font size
+            }
+          }
+        }
+      },
       scales: {
         x: {
-          stacked: true, // Stack the bars for punctual, delayed, and cancelled per IC line
-          ticks: {
-            autoSkip: false, // Ensure every label is shown
-            maxRotation: 90, // Rotate the labels for better readability
-            minRotation: 90,
+          stacked: true,
+          title: {
+            display: true,
+            text: 'Wochentag',
             font: {
-              size: isMobile ? 8 : 12 // Smaller font size for mobile devices
+              size: window.innerWidth < 480 ? 12 : 14, // X-axis title font size
+              weight: 'bold'
+            },
+            padding: {
+              top: 10
+            }
+          },
+          ticks: {
+            font: {
+              size: window.innerWidth < 480 ? 12 : 14 // X-axis tick labels font size
             }
           }
         },
         y: {
           beginAtZero: true,
-          stacked: true, // Stack the bars vertically
-          max: 1500 // Set the y-axis max to 1500
-        }
-      },
-      plugins: {
-        legend: {
-          display: true,
-          labels: {
+          stacked: true,
+          max: 1200,
+          title: {
+            display: true,
+            text: 'Anzahl',
             font: {
-              size: isMobile ? 8 : 12 // Smaller font size for mobile devices
+              size: window.innerWidth < 480 ? 12 : 14, // Y-axis title font size
+              weight: 'bold'
+            },
+            padding: {
+              bottom: 10
+            }
+          },
+          ticks: {
+            font: {
+              size: window.innerWidth < 480 ? 12 : 14 // Y-axis tick labels font size
             }
           }
         }
       },
-      maintainAspectRatio: false, // Allow custom height
-      responsive: true // Ensure responsiveness
+      responsive: true,
+      maintainAspectRatio: false
     }
   });
-
-  // Set dynamic canvas height based on the device size
-  document.getElementById('myChart').style.height = chartHeight + 'px';
 }
 
-// Function to get selected IC lines from checkboxes
+// Function to get selected IC lines from the dropdown
 function getSelectedLines() {
-  const checkboxes = document.querySelectorAll('#ic-line-filter input[type="checkbox"]:checked');
-  return Array.from(checkboxes).map(checkbox => checkbox.value);
+  const selectedOptions = document.getElementById('ic-line-dropdown').selectedOptions;
+  return Array.from(selectedOptions).map(option => option.value);
 }
 
-// Event listener for "Wochenverlauf" button
-document.getElementById('week-view-btn').addEventListener('click', async () => {
-  document.getElementById('week-view-btn').classList.add('active');
-  document.getElementById('previous-day-btn').classList.remove('active');
-  
-  // Fetch and process the weekly data based on selected IC lines
-  const selectedLines = getSelectedLines();
-  const data = await fetchWeeklyData();
-  const weekData = processWeeklyData(data, selectedLines);
-  createWeeklyChart(weekData);
+// Event listener for "Vortag" button (kept to load Vortag chart)
+document.getElementById('previous-day-btn').addEventListener('click', async () => {
+  document.getElementById('previous-day-btn').classList.add('active');
+  await createChart(); // Load Vortag chart
 });
 
-// Event listener for checkboxes to update the chart when selections change
-document.querySelectorAll('#ic-line-filter input[type="checkbox"]').forEach(checkbox => {
-  checkbox.addEventListener('change', async () => {
-    const selectedLines = getSelectedLines();
-    const data = await fetchWeeklyData();
-    const weekData = processWeeklyData(data, selectedLines);
-    createWeeklyChart(weekData);
-  });
+// Event listener for dropdown changes (triggers weekly chart)
+document.getElementById('ic-line-dropdown').addEventListener('change', async () => {
+  await createWeeklyChart(); // Load weekly chart when dropdown selection changes
 });
 
 // Initialize with the "Vortag" chart on page load
 document.addEventListener('DOMContentLoaded', async () => {
-  await createChart(); // Load "Vortag" chart by default
+  await createChart(); // Load Vortag chart by default
 });
-
-
-
-
 
 // Define a chart variable specific to the Reliability charts
 let reliabilityChart;
@@ -1119,6 +1327,9 @@ async function createReliabilityChart() {
     // Daten für Zuverlässigkeit berechnen
     lines.forEach(line => {
       const latestEntry = data[line][data[line].length - 1]; // Letzter Eintrag (neuestes Datum)
+      const entryDate = new Date(latestEntry.zeit);
+      entryDate.setDate(entryDate.getDate() - 1); // Adjust to reflect the previous day, as the data represents the previous day
+
       const abfahrten = latestEntry.abfahrten;
       const verspaetet = latestEntry.verspaetet;
       const ausfall = latestEntry.ausfall;
@@ -1126,7 +1337,8 @@ async function createReliabilityChart() {
       
       reliabilityData.push({
         linie: line,
-        zuverlässigkeit: zuverlässigkeit.toFixed(2) // Zuverlässigkeit mit zwei Dezimalstellen
+        zuverlässigkeit: zuverlässigkeit.toFixed(2), // Zuverlässigkeit mit zwei Dezimalstellen
+        datum: entryDate // Store the adjusted date for chart title use
       });
     });
 
@@ -1138,11 +1350,12 @@ async function createReliabilityChart() {
     const reliabilityValues = reliabilityData.map(entry => entry.zuverlässigkeit);
     const lineColors = reliabilityData.map(entry => icLineColors[entry.linie]); // Füge die Farben hinzu
 
-    // Prüfe, ob die Bildschirmbreite kleiner als 480px ist (mobile Version)
-    const isMobile = window.innerWidth < 480;
+    // Format the date for the chart title (use the first entry since all data is for the same day)
+    const formattedDate = `${reliabilityData[0].datum.toLocaleDateString('de-DE', { weekday: 'long' })}, ${reliabilityData[0].datum.getDate()}.${(reliabilityData[0].datum.getMonth() + 1).toString().padStart(2, '0')}`;
 
-    // Lege die gewünschte Höhe für mobile und größere Bildschirme fest
-    const chartHeight = isMobile ? 600 : 400; // Z.B. 600px für mobile Geräte, 400px für größere Bildschirme
+   // Set the dynamic height for the chart
+   const chartHeight = window.innerWidth < 430 ? '60vh' : '400px'; // Adjust based on screen size
+   document.getElementById('reliabilityChart').style.height = chartHeight;
 
     // Destroy the existing reliabilityChart if it exists
     if (reliabilityChart) {
@@ -1166,20 +1379,58 @@ async function createReliabilityChart() {
       options: {
         indexAxis: 'x', // Vertikale Balken (x und y Achse vertauscht)
         scales: {
-          y: {
-            beginAtZero: true,
-            max: 100 // Prozentuale Zuverlässigkeit geht bis 100%
-          },
           x: {
-            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'IC-Linie',
+              font: {
+                size: window.innerWidth < 430 ? 14 : 16, // Title font size      
+                weight: 'bold'
+              },
+              padding: {
+                top: 10
+              }
+            },
             ticks: {
               font: {
-                size: isMobile ? 8 : 12 // Kleinere Schriftgröße für mobile Geräte
+                size: window.innerWidth < 430 ? 12 : 14 // X-axis tick labels font size
+              }
+            }
+          },
+          y: {
+            beginAtZero: true,
+            max: 100, // Prozentuale Zuverlässigkeit geht bis 100%
+            title: {
+              display: true,
+              text: 'Zuverlässigkeit (%)',
+              font: {
+                size: window.innerWidth < 430 ? 12 : 14, // Y-axis title font size
+                weight: 'bold'
+              },
+              padding: {
+                bottom: 10
+              }
+            },
+            ticks: {
+              font: {
+                size: window.innerWidth < 430 ? 12 : 14 // Y-axis tick labels font size
               }
             }
           }
         },
         plugins: {
+          title: {
+            display: true,
+            text: `Daten vom ${formattedDate}`,
+            font: {
+              size: window.innerWidth < 430 ? 14 : 16, // Title font size
+              weight: 'bold'
+            },
+            padding: {
+              top: 20,
+              bottom: 20
+            }
+          },
           legend: {
             labels: {
               generateLabels: function(chart) {
@@ -1192,6 +1443,9 @@ async function createReliabilityChart() {
                   label.boxHeight = 10;
                 });
                 return labels;
+              },
+              font: {
+                size: window.innerWidth < 430 ? 10 : 12 // Legend labels font size
               }
             }
           },
@@ -1206,9 +1460,6 @@ async function createReliabilityChart() {
         maintainAspectRatio: false, // Damit die manuelle Höhe verwendet wird
       }
     });
-
-    // Setze die Höhe des Canvas-Elements dynamisch
-    document.getElementById('reliabilityChart').style.height = chartHeight + 'px';
   }
 }
 
@@ -1217,21 +1468,26 @@ async function createWeekViewLineChart() {
   const data = await fetchReliabilityData();
 
   if (data) {
-    // Initialize structure to hold reliability data for each IC line by day in German
+    const dateEntries = []; // Store all dates to determine the range later
     const weeklyReliability = {
-      Montag: {},
-      Dienstag: {},
-      Mittwoch: {},
-      Donnerstag: {},
-      Freitag: {},
-      Samstag: {},
-      Sonntag: {}
+      Montag: [],
+      Dienstag: [],
+      Mittwoch: [],
+      Donnerstag: [],
+      Freitag: [],
+      Samstag: [],
+      Sonntag: []
     };
 
-    // Process data for each IC line and day
+    // Process data for each IC line and extract only the last 7 entries
     Object.keys(data).forEach(line => {
-      data[line].forEach(entry => {
+      // Get the last 7 entries for each line (sorted in ascending order)
+      const last7Entries = data[line].slice(-7);
+      last7Entries.forEach(entry => {
         const date = new Date(entry.zeit); // Date of the entry
+        date.setDate(date.getDate() - 1); // Adjust for previous day representation
+        dateEntries.push(new Date(date)); // Collect adjusted dates for determining the range
+
         const dayOfWeek = date.toLocaleDateString('de-DE', { weekday: 'long' }); // Get the day of the week in German
 
         const abfahrten = entry.abfahrten;
@@ -1239,21 +1495,25 @@ async function createWeekViewLineChart() {
         const ausfall = entry.ausfall;
         const zuverlässigkeit = 100 - (100 / abfahrten * (verspaetet + ausfall));
 
-        if (!weeklyReliability[dayOfWeek][line]) {
-          weeklyReliability[dayOfWeek][line] = [];
-        }
-        weeklyReliability[dayOfWeek][line].push(zuverlässigkeit);
+        weeklyReliability[dayOfWeek].push({ linie: line, zuverlässigkeit: zuverlässigkeit });
       });
     });
 
-    // Prepare datasets for each IC line
+    // Sort the date entries to determine the start and end of the week range
+    dateEntries.sort((a, b) => a - b);
+    const startDate = dateEntries[0];
+    const endDate = dateEntries[dateEntries.length - 1];
+
+    // Format start and end dates for chart title
+    const startFormatted = `${startDate.toLocaleDateString('de-DE', { weekday: 'long' })}, ${startDate.getDate()}.${(startDate.getMonth() + 1).toString().padStart(2, '0')}`;
+    const endFormatted = `${endDate.toLocaleDateString('de-DE', { weekday: 'long' })}, ${endDate.getDate()}.${(endDate.getMonth() + 1).toString().padStart(2, '0')}`;
+
+    // Prepare datasets for each IC line for each day
     const datasets = [];
     Object.keys(icLineColors).forEach(line => {
       const data = Object.keys(weeklyReliability).map(day => {
-        if (weeklyReliability[day][line] && weeklyReliability[day][line].length > 0) {
-          return weeklyReliability[day][line][0]; // Return the reliability for the line on this day
-        }
-        return null; // Return null if no data available for this line on this day
+        const lineData = weeklyReliability[day].find(entry => entry.linie === line);
+        return lineData ? lineData.zuverlässigkeit : null;
       });
 
       datasets.push({
@@ -1265,16 +1525,6 @@ async function createWeekViewLineChart() {
       });
     });
 
-    // Get today's day index (0 = Sunday, 1 = Monday, etc.)
-    const daysOfWeek = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
-    const todayIndex = (new Date().getDay() + 6) % 7; // Adjust to align with Montag = 0, Sonntag = 6
-
-    // Shift the days according to the current day and ensure that the most recent day is last
-    const rotatedDaysOfWeek = daysOfWeek.slice(todayIndex + 1).concat(daysOfWeek.slice(0, todayIndex + 1));
-
-    // The newest data represents the previous day, so shift the days one more time for this
-    const shiftedDaysOfWeek = rotatedDaysOfWeek.map((day, index, arr) => arr[(index + 1) % arr.length]);
-
     // Destroy previous reliabilityChart if it exists
     if (reliabilityChart) {
       reliabilityChart.destroy();
@@ -1285,24 +1535,67 @@ async function createWeekViewLineChart() {
     reliabilityChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: shiftedDaysOfWeek, // X-axis (shifted days of the week, with the most recent data on the right)
+        labels: Object.keys(weeklyReliability), // X-axis (days of the week)
         datasets: datasets
       },
       options: {
         scales: {
           x: {
-            beginAtZero: true
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Wochentag',
+              font: {
+                size: window.innerWidth < 480 ? 12 : 14, // X-axis title font size
+                weight: 'bold'
+              },
+              padding: {
+                top: 10
+              }
+            },
+            ticks: {
+              font: {
+                size: window.innerWidth < 480 ? 12 : 14 // X-axis tick labels font size
+              }
+            }
           },
           y: {
             min: 50, // Start the y-axis at 50%
             max: 100, // Percentage reliability goes up to 100%
+            title: {
+              display: true,
+              text: 'Zuverlässigkeit (%)',
+              font: {
+                size: window.innerWidth < 480 ? 12 : 14, // Y-axis title font size
+                weight: 'bold'
+              },
+              padding: {
+                bottom: 10
+              }
+            },
             ticks: {
-              stepSize: 10 // Increase gaps between values
+              stepSize: 10, // Increase gaps between values
+              font: {
+                size: window.innerWidth < 480 ? 12 : 14 // Y-axis tick labels font size
+              }
             }
           }
         },
         responsive: true,
+        maintainAspectRatio: false, // Maintain a custom height as specified
         plugins: {
+          title: {
+            display: true,
+            text: `Daten vom ${startFormatted} - ${endFormatted}`,
+            font: {
+              size: window.innerWidth < 480 ? 14 : 16, // Title font size
+              weight: 'bold'
+            },
+            padding: {
+              top: 20,
+              bottom: 20
+            }
+          },
           legend: {
             position: 'top',
             labels: {
@@ -1316,6 +1609,9 @@ async function createWeekViewLineChart() {
                   label.boxHeight = 10;
                 });
                 return labels;
+              },
+              font: {
+                size: window.innerWidth < 480 ? 10 : 12 // Legend labels font size
               }
             }
           },
@@ -1337,6 +1633,9 @@ async function createWeekViewLineChart() {
         }
       }
     });
+
+    // Set the dynamic height for the chart
+    document.getElementById('reliabilityChart').style.height = window.innerWidth < 480 ? '600px' : '400px';
   }
 }
 
@@ -1363,4 +1662,18 @@ function setActiveRankingButton(buttonId) {
 document.addEventListener('DOMContentLoaded', function () {
   createReliabilityChart();
   document.getElementById('ranking-previous-day-btn').classList.add('active'); // Set Vortag as active by default
+});
+
+// Event listener for the "Week View" button
+document.getElementById('week-view-btn').addEventListener('click', async function() {
+  document.getElementById('week-view-btn').classList.add('active');
+  document.getElementById('previous-day-btn').classList.remove('active');
+  await createWeeklyChart(); // Load weekly chart
+});
+
+// Event listener for the "Previous Day" button
+document.getElementById('previous-day-btn').addEventListener('click', async function() {
+  document.getElementById('previous-day-btn').classList.add('active');
+  document.getElementById('week-view-btn').classList.remove('active');
+  await createChart(); // Load previous day chart
 });
