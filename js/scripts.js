@@ -35,83 +35,6 @@ document.getElementById('scroll-button').addEventListener('click', function() {
   });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Get elements by their IDs
-  const gesternButton = document.getElementById("previous-day-btn");
-  const dropdownMenu = document.getElementById("ic-line-dropdown");
-  const rankingPreviousDayButton = document.getElementById("ranking-previous-day-btn");
-  const rankingWeekViewButton = document.getElementById("ranking-week-view-btn");
-
-  // Set the "Gestern" button as active on page load
-  if (gesternButton) {
-    gesternButton.classList.add("active");
-  }
-
-  // Event listener for the "Gestern" button
-  if (gesternButton) {
-    gesternButton.addEventListener("click", function () {
-      // Activate the "Gestern" button and deactivate others
-      setActiveButton(gesternButton);
-    });
-  }
-
-  // Event listener for dropdown change
-  if (dropdownMenu) {
-    dropdownMenu.addEventListener("change", function () {
-      // Deactivate the "Gestern" button
-      if (gesternButton) {
-        gesternButton.classList.remove("active");
-      }
-      
-      // Deactivate other ranking buttons
-      if (rankingPreviousDayButton) {
-        rankingPreviousDayButton.classList.remove("active");
-      }
-      if (rankingWeekViewButton) {
-        rankingWeekViewButton.classList.remove("active");
-      }
-    });
-  }
-
-  // Event listener for the "Vortag" ranking button
-  if (rankingPreviousDayButton) {
-    rankingPreviousDayButton.addEventListener("click", function () {
-      // Activate the "Vortag" button and deactivate others
-      setActiveButton(rankingPreviousDayButton);
-    });
-  }
-
-  // Event listener for the "Vorwoche" ranking button
-  if (rankingWeekViewButton) {
-    rankingWeekViewButton.addEventListener("click", function () {
-      // Activate the "Vorwoche" button and deactivate others
-      setActiveButton(rankingWeekViewButton);
-    });
-  }
-
-  // Function to manage the active state of buttons
-  function setActiveButton(activeButton) {
-    // Remove active state from all buttons
-    if (gesternButton) {
-      gesternButton.classList.remove("active");
-    }
-    if (rankingPreviousDayButton) {
-      rankingPreviousDayButton.classList.remove("active");
-    }
-    if (rankingWeekViewButton) {
-      rankingWeekViewButton.classList.remove("active");
-    }
-
-    // Set the active state to the clicked button
-    activeButton.classList.add("active");
-
-    // Reset dropdown to default value
-    if (dropdownMenu) {
-      dropdownMenu.value = "";
-    }
-  }
-});
-
      // Separate sources and layers for each IC line
      map.on('load', function () {
 
@@ -757,28 +680,27 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 }); // Trigger when at least 10% of the data section is visible
 
-// Überwachung der Data Section starten
+// Start monitoring the Data Section
 observer.observe(dataSection);
 
-// Scroll Event als Fallback verwenden, um sicherzustellen, dass das Popup geschlossen wird
+// Use Scroll Event as a fallback to ensure the popup is closed
 window.addEventListener('scroll', function() {
   const dataSectionTop = dataSection.getBoundingClientRect().top;
   const windowHeight = window.innerHeight;
 
-  // Wenn der obere Rand der Data Section sichtbar ist, blende das Popup aus
+  // If the top of the Data Section is visible, hide the popup
   if (dataSectionTop <= windowHeight) {
     hidePopup();
   }
 });
 
-
-// Funktion zum Schließen des Popups, wenn auf die Karte geklickt wird
+// Function to close the popup when clicking on the map
 map.on('click', function (e) {
   const popup = document.getElementById('popup-window');
   popup.style.display = 'none';
 });
 
-// Maus Veränderung (hover effect for each line)
+// Mouse hover effect for each line
 map.on('mouseenter', 'ic1-line-layer', function () {
   map.getCanvas().style.cursor = 'pointer';
 });
@@ -1262,32 +1184,10 @@ async function createWeeklyChart() {
   });
 }
 
-// Function to get selected IC lines from the dropdown
-function getSelectedLines() {
-  const selectedOptions = document.getElementById('ic-line-dropdown').selectedOptions;
-  return Array.from(selectedOptions).map(option => option.value);
-}
-
-// Event listener for "Vortag" button (kept to load Vortag chart)
-document.getElementById('previous-day-btn').addEventListener('click', async () => {
-  document.getElementById('previous-day-btn').classList.add('active');
-  await createChart(); // Load Vortag chart
-});
-
-// Event listener for dropdown changes (triggers weekly chart)
-document.getElementById('ic-line-dropdown').addEventListener('change', async () => {
-  await createWeeklyChart(); // Load weekly chart when dropdown selection changes
-});
-
-// Initialize with the "Vortag" chart on page load
-document.addEventListener('DOMContentLoaded', async () => {
-  await createChart(); // Load Vortag chart by default
-});
-
-// Define a chart variable specific to the Reliability charts
+// Create reliability chart with Chart.js
 let reliabilityChart;
 
-// Funktion, um Daten von der angegebenen URL zu holen
+// Function to fetch data from the specified URL
 async function fetchReliabilityData() {
   try {
     const response = await fetch('https://etl.mmp.li/sbb/etl/unload.php');
@@ -1301,7 +1201,7 @@ async function fetchReliabilityData() {
   }
 }
 
-// Farben für die IC-Linien definieren
+// Define colors for the IC lines
 const icLineColors = {
   'IC1': '#FF0000',    // Rot für IC1
   'IC2': '#800080',    // Lila für IC2
@@ -1316,17 +1216,17 @@ const icLineColors = {
   'IC': '#A9A9A9'      // Dunkelgrau für allgemeine IC
 };
 
-// Funktion zum Erstellen des Vortags-Ranking-Charts
+// Function to create the "Previous Day" ranking chart
 async function createReliabilityChart() {
   const data = await fetchReliabilityData();
   
   if (data) {
-    const lines = Object.keys(data); // Alle Liniennamen (IC1, IC2, ...)
+    const lines = Object.keys(data); // All line names (IC1, IC2, ...)
     const reliabilityData = [];
 
-    // Daten für Zuverlässigkeit berechnen
+ // Calculate reliability data
     lines.forEach(line => {
-      const latestEntry = data[line][data[line].length - 1]; // Letzter Eintrag (neuestes Datum)
+      const latestEntry = data[line][data[line].length - 1]; // Latest entry (most recent date)
       const entryDate = new Date(latestEntry.zeit);
       entryDate.setDate(entryDate.getDate() - 1); // Adjust to reflect the previous day, as the data represents the previous day
 
@@ -1337,15 +1237,15 @@ async function createReliabilityChart() {
       
       reliabilityData.push({
         linie: line,
-        zuverlässigkeit: zuverlässigkeit.toFixed(2), // Zuverlässigkeit mit zwei Dezimalstellen
+        zuverlässigkeit: zuverlässigkeit.toFixed(2), // Reliability with two decimal places
         datum: entryDate // Store the adjusted date for chart title use
       });
     });
 
-    // Sortiere die Zuverlässigkeit in absteigender Reihenfolge
+  // Sort reliability data in descending order
     reliabilityData.sort((a, b) => b.zuverlässigkeit - a.zuverlässigkeit);
 
-    // Daten für das Chart vorbereiten
+  // Prepare data for the chart
     const lineLabels = reliabilityData.map(entry => entry.linie);
     const reliabilityValues = reliabilityData.map(entry => entry.zuverlässigkeit);
     const lineColors = reliabilityData.map(entry => icLineColors[entry.linie]); // Füge die Farben hinzu
@@ -1362,7 +1262,7 @@ async function createReliabilityChart() {
       reliabilityChart.destroy();
     }
 
-    // Chart.js 4.4.4 Grafik erstellen
+ // Create the Chart.js 4.4.4 chart
     const ctx = document.getElementById('reliabilityChart').getContext('2d');
     reliabilityChart = new Chart(ctx, {
       type: 'bar',
@@ -1371,13 +1271,13 @@ async function createReliabilityChart() {
         datasets: [{
           label: 'Zuverlässigkeit (%)',
           data: reliabilityValues,
-          backgroundColor: lineColors,  // Füge die Farben der IC-Linien hinzu
+          backgroundColor: lineColors,  
           borderColor: 'white',
           borderWidth: 1
         }]
       },
       options: {
-        indexAxis: 'x', // Vertikale Balken (x und y Achse vertauscht)
+        indexAxis: 'x', 
         scales: {
           x: {
             title: {
@@ -1399,7 +1299,7 @@ async function createReliabilityChart() {
           },
           y: {
             beginAtZero: true,
-            max: 100, // Prozentuale Zuverlässigkeit geht bis 100%
+            max: 100, 
             title: {
               display: true,
               text: 'Zuverlässigkeit (%)',
@@ -1457,13 +1357,13 @@ async function createReliabilityChart() {
             }
           }
         },
-        maintainAspectRatio: false, // Damit die manuelle Höhe verwendet wird
+        maintainAspectRatio: false,
       }
     });
   }
 }
 
-// Funktion zum Erstellen des Vorwochen-Ranking-Charts mit Linien-Diagramm
+/// Function to create the weekly ranking chart using a line chart
 async function createWeekViewLineChart() {
   const data = await fetchReliabilityData();
 
@@ -1639,41 +1539,85 @@ async function createWeekViewLineChart() {
   }
 }
 
-// Event-Listener für den Vortag-Button (Ranking Section)
-document.getElementById('ranking-previous-day-btn').addEventListener('click', function () {
-  setActiveRankingButton('ranking-previous-day-btn');
-  createReliabilityChart(); // Funktion zum Erstellen des Charts für den Vortag (Ranking)
+document.addEventListener("DOMContentLoaded", function () {
+  // Get elements by their IDs
+  const previousDayButton = document.getElementById("previous-day-btn");
+  const dropdownMenu = document.getElementById("ic-line-dropdown");
+  const rankingPreviousDayButton = document.getElementById("ranking-previous-day-btn");
+  const rankingWeekViewButton = document.getElementById("ranking-week-view-btn");
+
+  // Set the "Previous Day" button and "Ranking Previous Day" button as active on page load
+  if (previousDayButton && rankingPreviousDayButton) {
+    setActiveButton(previousDayButton);
+    setActiveButton(rankingPreviousDayButton);
+    createChart(); // Load previous day chart on page load
+    createReliabilityChart(); // Load reliability chart for "Previous Day" by default
+  }
+
+  // Event listener for the "Previous Day" button
+  if (previousDayButton) {
+    previousDayButton.addEventListener("click", async function () {
+      setActiveButton(previousDayButton);
+      setActiveButton(rankingPreviousDayButton); // Also activate ranking previous day button
+      await createChart(); // Load previous day chart
+      createReliabilityChart(); // Load reliability chart for "Previous Day"
+    });
+  }
+
+  // Event listener for dropdown menu change
+  if (dropdownMenu) {
+    dropdownMenu.addEventListener("change", function () {
+      // Deactivate "Previous Day" buttons
+      deactivateAllButtons();
+      setActiveButton(dropdownMenu); // Set dropdown as active
+      setActiveButton(rankingWeekViewButton); // Set the ranking "Week View" button as active
+      createWeekViewLineChart(); // Load the weekly chart based on dropdown selection
+    });
+  }
+
+  // Event listener for the "Ranking Previous Day" button
+  if (rankingPreviousDayButton) {
+    rankingPreviousDayButton.addEventListener("click", function () {
+      setActiveButton(previousDayButton); // Make sure the "Previous Day" button is also active
+      setActiveButton(rankingPreviousDayButton);
+      createReliabilityChart(); // Load reliability chart for "Previous Day"
+    });
+  }
+
+  // Event listener for the "Ranking Week View" button
+  if (rankingWeekViewButton) {
+    rankingWeekViewButton.addEventListener("click", function () {
+      deactivateAllButtons();
+      setActiveButton(rankingWeekViewButton);
+      createWeekViewLineChart(); // Load the week view chart for ranking
+    });
+  }
+
+  // Function to manage the active state of buttons
+  function setActiveButton(activeElement) {
+    deactivateAllButtons(); // Deactivate all buttons first
+    activeElement.classList.add("active"); // Add active state to the clicked/changed element
+
+    // Reset dropdown to default value if necessary
+    if (dropdownMenu && activeElement !== dropdownMenu) {
+      dropdownMenu.value = ""; // Reset the dropdown if it's not the one being activated
+    }
+  }
+
+  // Function to deactivate all buttons and dropdowns
+  function deactivateAllButtons() {
+    if (previousDayButton) {
+      previousDayButton.classList.remove("active");
+    }
+    if (rankingPreviousDayButton) {
+      rankingPreviousDayButton.classList.remove("active");
+    }
+    if (rankingWeekViewButton) {
+      rankingWeekViewButton.classList.remove("active");
+    }
+    if (dropdownMenu) {
+      dropdownMenu.classList.remove("active");
+    }
+  }
 });
 
-// Event-Listener für den Vorwochen-Button (Ranking Section)
-document.getElementById('ranking-week-view-btn').addEventListener('click', function () {
-  setActiveRankingButton('ranking-week-view-btn');
-  createWeekViewLineChart(); // Funktion zum Erstellen des Charts für die Vorwoche (Ranking)
-});
-
-// Funktion, um den aktiven Button in der Ranking-Sektion zu markieren
-function setActiveRankingButton(buttonId) {
-  document.getElementById('ranking-previous-day-btn').classList.remove('active');
-  document.getElementById('ranking-week-view-btn').classList.remove('active');
-  document.getElementById(buttonId).classList.add('active');
-}
-
-// Load the "Vortag" chart by default on page load
-document.addEventListener('DOMContentLoaded', function () {
-  createReliabilityChart();
-  document.getElementById('ranking-previous-day-btn').classList.add('active'); // Set Vortag as active by default
-});
-
-// Event listener for the "Week View" button
-document.getElementById('week-view-btn').addEventListener('click', async function() {
-  document.getElementById('week-view-btn').classList.add('active');
-  document.getElementById('previous-day-btn').classList.remove('active');
-  await createWeeklyChart(); // Load weekly chart
-});
-
-// Event listener for the "Previous Day" button
-document.getElementById('previous-day-btn').addEventListener('click', async function() {
-  document.getElementById('previous-day-btn').classList.add('active');
-  document.getElementById('week-view-btn').classList.remove('active');
-  await createChart(); // Load previous day chart
-});
