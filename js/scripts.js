@@ -1013,6 +1013,13 @@ function processWeeklyData(data, selectedLines) {
   return weekData;
 }
 
+// Function to get selected IC lines from the dropdown
+function getSelectedLines() {
+  const dropdownMenu = document.getElementById('ic-line-dropdown');
+  const selectedOptions = dropdownMenu && dropdownMenu.selectedOptions;
+  return Array.from(selectedOptions).map(option => option.value);
+}
+
 // Function to create the "Wochenverlauf" chart (weekly chart)
 async function createWeeklyChart() {
   const data = await fetchData();
@@ -1020,6 +1027,7 @@ async function createWeeklyChart() {
   const selectedLines = getSelectedLines(); // Fetch selected lines from dropdown
 
   if (!data || !selectedLines.length) {
+    console.error("No data or no selected lines available.");
     return; // Exit if there's no data or no selected lines
   }
 
@@ -1548,8 +1556,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Set the "Previous Day" button and "Ranking Previous Day" button as active on page load
   if (previousDayButton && rankingPreviousDayButton) {
-    setActiveButton(previousDayButton);
-    setActiveButton(rankingPreviousDayButton);
+    previousDayButton.classList.add("active");
+    rankingPreviousDayButton.classList.add("active");
     createChart(); // Load previous day chart on page load
     createReliabilityChart(); // Load reliability chart for "Previous Day" by default
   }
@@ -1557,50 +1565,55 @@ document.addEventListener("DOMContentLoaded", function () {
   // Event listener for the "Previous Day" button
   if (previousDayButton) {
     previousDayButton.addEventListener("click", async function () {
-      setActiveButton(previousDayButton);
-      setActiveButton(rankingPreviousDayButton); // Also activate ranking previous day button
+      deactivatePreviousDayButton(); // Only deactivate other related buttons, not ranking buttons
+      previousDayButton.classList.add("active"); // Set itself to active
       await createChart(); // Load previous day chart
-      createReliabilityChart(); // Load reliability chart for "Previous Day"
     });
   }
 
   // Event listener for dropdown menu change
   if (dropdownMenu) {
-    dropdownMenu.addEventListener("change", function () {
-      // Deactivate "Previous Day" buttons
-      deactivateAllButtons();
-      setActiveButton(dropdownMenu); // Set dropdown as active
-      setActiveButton(rankingWeekViewButton); // Set the ranking "Week View" button as active
-      createWeekViewLineChart(); // Load the weekly chart based on dropdown selection
+    dropdownMenu.addEventListener("change", async function () {
+      console.log("Dropdown changed, loading weekly chart...");
+      previousDayButton.classList.remove("active"); // Deactivate Previous Day button
+      rankingPreviousDayButton.classList.add("active"); // Keep "Ranking Previous Day" button active
+      await createWeeklyChart(); // Load the weekly chart based on dropdown selection
     });
   }
 
   // Event listener for the "Ranking Previous Day" button
   if (rankingPreviousDayButton) {
-    rankingPreviousDayButton.addEventListener("click", function () {
-      setActiveButton(previousDayButton); // Make sure the "Previous Day" button is also active
-      setActiveButton(rankingPreviousDayButton);
-      createReliabilityChart(); // Load reliability chart for "Previous Day"
+    rankingPreviousDayButton.addEventListener("click", async function () {
+      deactivateAllRankingButtons();
+      rankingPreviousDayButton.classList.add("active");
+      await createReliabilityChart(); // Load reliability chart for "Previous Day"
     });
   }
 
   // Event listener for the "Ranking Week View" button
   if (rankingWeekViewButton) {
-    rankingWeekViewButton.addEventListener("click", function () {
-      deactivateAllButtons();
-      setActiveButton(rankingWeekViewButton);
-      createWeekViewLineChart(); // Load the week view chart for ranking
+    rankingWeekViewButton.addEventListener("click", async function () {
+      deactivateAllRankingButtons();
+      rankingWeekViewButton.classList.add("active");
+      previousDayButton.classList.add("active"); // Keep "Previous Day" button active
+      await createWeekViewLineChart(); // Load the week view chart for ranking
     });
   }
 
-  // Function to manage the active state of buttons
-  function setActiveButton(activeElement) {
-    deactivateAllButtons(); // Deactivate all buttons first
-    activeElement.classList.add("active"); // Add active state to the clicked/changed element
+  // Function to deactivate only the Previous Day button
+  function deactivatePreviousDayButton() {
+    if (previousDayButton) {
+      previousDayButton.classList.remove("active");
+    }
+  }
 
-    // Reset dropdown to default value if necessary
-    if (dropdownMenu && activeElement !== dropdownMenu) {
-      dropdownMenu.value = ""; // Reset the dropdown if it's not the one being activated
+  // Function to deactivate ranking buttons only
+  function deactivateAllRankingButtons() {
+    if (rankingPreviousDayButton) {
+      rankingPreviousDayButton.classList.remove("active");
+    }
+    if (rankingWeekViewButton) {
+      rankingWeekViewButton.classList.remove("active");
     }
   }
 
@@ -1616,8 +1629,7 @@ document.addEventListener("DOMContentLoaded", function () {
       rankingWeekViewButton.classList.remove("active");
     }
     if (dropdownMenu) {
-      dropdownMenu.classList.remove("active");
+      dropdownMenu.value = ""; // Clear the dropdown value for clarity
     }
   }
 });
-
