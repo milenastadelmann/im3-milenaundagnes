@@ -23,15 +23,15 @@ Unsere Website visualisiert die Verlässlichkeit der IC-Züge der SBB mithilfe v
 - **Programmierung:**
   - **Responsive Design**: Wir haben gelernt, wie entscheidend es ist, von Beginn an das Layout für mobile Geräte mitzuplanen. Eine der grössten Herausforderungen bestand darin, die **Chart.js-Diagramme** auf kleinen Bildschirmen ansprechend darzustellen. Schliesslich konnten wir dies durch eine Kombination von **CSS-Anpassungen** und spezifischen **JavaScript-Lösungen** erreichen.
   - **JavaScript**: Wir vertieften unser Wissen über **interaktive Karten** und **Pop-ups**, insbesondere beim Entwickeln der anklickbaren IC-Linien auf der Mapbox-Karte und dem dynamischen Laden von Informationen über Verspätungen und Ausfälle.
-  - **API-Datenmanagement**: Wir haben mit Hilfe von unseren Dozierenden gelernt, API-Daten zu transformieren, in einer Datenbank zu speichern und auf der Website darzustellen. Diese Fähigkeit war zentral für unser Projekt. Ein klarer Vorteil war der überschaubare Datensatz von 11 IC-Linien, der täglich in unsere Datenbank geladen wird. Die ungefilterte API (/api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20) unseres gewählten SBB Datensatzes Soll/Ist Vergleich Abfahrts-/Ankunftszeiten SBB (Vortag) würde täglich über 50'000 Einträge enthalten. Deshalb haben wir uns zu Beginn des Projekts entschieden, drei verschiedene API-Calls vom Datensatz zu verwenden, und diese so zu filtern, dass nur die notwendigen Daten auf unsere Datenbank geladen werden. Das half uns dabei, den Überblick zu behalten und die Daten sinnvoll und leicht verständlich auf unserer Website zu visualisieren. 
+  - **API-Datenmanagement**: Wir haben mit Hilfe von unseren Dozierenden gelernt, API-Daten zu transformieren, in einer Datenbank zu speichern und auf der Website darzustellen. Diese Fähigkeit war zentral für unser Projekt. Ein klarer Vorteil war der überschaubare Datensatz von 11 IC-Linien, der täglich in unsere Datenbank geladen wird. Die ungefilterte API (https://data.sbb.ch//api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20) unseres gewählten SBB Datensatzes Soll/Ist Vergleich Abfahrts-/Ankunftszeiten SBB (Vortag) würde täglich über 50'000 Einträge enthalten. Deshalb haben wir uns zu Beginn des Projekts entschieden, drei verschiedene API-Calls vom Datensatz zu verwenden, und diese so zu filtern, dass nur die notwendigen Daten auf unsere Datenbank geladen werden. Das half uns dabei, den Überblick zu behalten und die Daten sinnvoll und leicht verständlich auf unserer Website zu visualisieren. 
 
 ## Benutzte Ressourcen
 
 - **Daten-Website SBB:** [SBB Ist-Daten](https://data.sbb.ch/explore/dataset/ist-daten-sbb/information/)
 - **API-Abfahrten-IC-Linien:** 
-/api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22
-- **API-Verspätungen-IC-Linien:** /api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=ankunftsverspatung%3A%22true%22
-- **API-Ausfälle-IC-Linien:** /api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=faellt_aus_tf%3A%22true%22
+https://data.sbb.ch//api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22
+- **API-Verspätungen-IC-Linien:** https://data.sbb.ch//api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=ankunftsverspatung%3A%22true%22
+- **API-Ausfälle-IC-Linien:** https://data.sbb.ch//api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=faellt_aus_tf%3A%22true%22
 - **Mapbox:** Für die interaktive Kartenvisualisierung.
 - **Chart.js:** Für die Darstellung der Balken- und Liniendiagramme zur Visualisierung von Ausfällen und Verspätungen.
 - **Figma:** Zum Planen des responsiven Designs und der Layouts.
