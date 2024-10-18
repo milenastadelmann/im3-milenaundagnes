@@ -31,7 +31,7 @@ Unsere Website visualisiert die Verlässlichkeit der IC-Züge der SBB mithilfe v
 - **API-Abfahrten-IC-Linien:** 
 /api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22
 - **API-Verspätungen-IC-Linien:** /api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=ankunftsverspatung%3A%22true%22
-- **API-Aufälle-IC-Linien:** /api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=faellt_aus_tf%3A%22true%22
+- **API-Ausfälle-IC-Linien:** /api/explore/v2.1/catalog/datasets/ist-daten-sbb/records?limit=20&refine=verkehrsmittel_text%3A%22IC%22&refine=faellt_aus_tf%3A%22true%22
 - **Mapbox:** Für die interaktive Kartenvisualisierung.
 - **Chart.js:** Für die Darstellung der Balken- und Liniendiagramme zur Visualisierung von Ausfällen und Verspätungen.
 - **Figma:** Zum Planen des responsiven Designs und der Layouts.
